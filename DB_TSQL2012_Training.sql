@@ -9,13 +9,8 @@ SELECT name, description
 FROM sys.fn_helpcollations();
 
 
---Counting the number of occurences of the item put as an argument in the replace function:
+--Computing the number of occurences of the item put as an argument in the replace function:
 select empid, lastname, len(lastname) - len(replace(lastname, 'e', '')) as num_occ
 from HR.Employees
 
-
-USE TSQL2012;
-SELECT empid, lastname, len(lastname) - len(replace(lastname, 'e', ''))
-FROM HR.Employees
-GO;
 
