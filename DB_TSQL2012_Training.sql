@@ -16,7 +16,7 @@ SELECT name, description
 FROM sys.fn_helpcollations();
 
 
--- FUNCTIONS OVERVIEW:
+-- *********************************************************************************FUNCTIONS OVERVIEW:
 
 --Computing the number of occurences of the item put as an argument in the replace function:
 select empid, lastname, len(lastname) - len(replace(lastname, 'e', '')) as num_occ
@@ -40,4 +40,70 @@ from Production.Suppliers;
 SELECT REPLACE ('Johnnohneny','ohn','ccc'); --Jcccnccceny
 SELECT STUFF ('Johnnohneny',2,3,'ccc'); --Jcccnohneny; first index =1
 
-SELECT RTRIM('   AAA  II  I   ')+ 'XXX';
+SELECT lastname
+from [HR].[Employees]
+where lastname like '[^D, P, C]%'
+--the same as;
+
+SELECT lastname
+from [HR].[Employees]
+where left(lastname, 1)!='D' and left(lastname, 1)!='P' and left(lastname, 1)!='C';
+
+-- ESCAPE function with escape character - checking wildcard characters:
+update [HR].[Employees]
+set title ='Sales_Manager' where title = 'Sales Manager' --check title with '_'
+
+select title
+from [HR].[Employees]
+where title like '%!_%' ESCAPE '!'; 
+-- if the wildcard character belongs to %, _,[ the square brackets might be used instead of escape character: LIKE ‘%[_]%’
+
+
+
+
+--******************************************************************************************DATE/TIME:
+--IMPLICIT CONVERSIONS - are not visible to the user. SQL Server automatically converts the data from one data type to another. according to the rules of datatype precedence.
+--EXPLICIT CONVERSIONS -  if you don’t specify how SQL Server should convert the data types to do what you want (explicitly), it will try to guess your intentions (implicitly), (use the CAST or CONVERT functions)
+
+SELECT @@LANGUAGE; --check current session's language, languages have own datetime format
+--the output format is unchanged, setting only affects the way the values you enter are interpreted
+
+
+select empid, orderdate 
+from [Sales].[Orders]
+where orderdate='20060704'; --SQL allows to specify a literal of a different type that can be converted, 
+--SQL Server defines precedence among data types and will usually implicitly convert the operand that has a lower data type precedence to the one that has higher precedence.
+--string has lower precedence with respect to date and time data types
+
+--CAST/CONVERT/PARSE:
+SELECT CONVERT(DATETIME, '02/12/2007', 101); -- the third argument is a style number
+SELECT PARSE('02/12/2007' AS DATETIME USING 'en-US'); -- like CAST, additionally allows to indicate the culture;
+
+select convert(datetime, birthdate, 107) as conv_birth
+from [HR].[Employees] 
+
+--DATA RANGE FILTERING:
+--in most cases, when you apply manipulation on the filtered column, SQL Server cannot use an index in an efficient manner:
+--INSTEAD OF:
+SELECT orderid, custid, empid, orderdate
+FROM Sales.Orders
+WHERE YEAR(orderdate) = 2007;
+
+--BETTER WAY: (you need to revise the predicate so that there is no manipulation on the filtered column)
+SELECT orderid, custid, empid, orderdate
+FROM Sales.Orders
+WHERE orderdate >= '20070101' AND orderdate < '20080101';
+
+select cast(sysdatetime() as date) as data,
+	   cast(sysdatetime() as time) as czas,
+	   CONVERT(varchar, SYSDATETIME(),	108) as format_czas
+
+
+
+
+
+select IS_NULLABLE, COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS 
+where TABLE_NAME='Employees' and IS_NULLABLE='YES'
+
+select TABLE_NAME, COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS
+where DATA_TYPE like '%[D,d]ate%';
