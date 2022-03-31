@@ -187,7 +187,7 @@ select C.custid, C.companyname, O.orderid,
 	case  
 		when O.orderdate is null then 'No'
 		else 'Yes'
-end As HasOrderOn20070212
+	end As HasOrderOn20070212
 from [Sales].[Customers] C 
 left outer join [Sales].[Orders] O
 	on C.custid=O.custid 
@@ -278,7 +278,7 @@ select orderid, orderdate, empid, custid,
 from [Sales].[Orders] O1
 
 
--- running aggregation (as an alternative to window function):
+-- running aggregation (as an alternative to the window function):
 select top 5 * from [Sales].[OrderTotalsByYear]
 
 select orderyear, qty, 
@@ -287,6 +287,160 @@ select orderyear, qty,
 		where O2.orderyear<=O1.orderyear) running_qty
 from [Sales].[OrderTotalsByYear] O1
 order by orderyear
+
+
+--struggling with NULL in a subquery: (when the null value appears in the customerid):
+select *
+into [Sales].[Orders2] --creating new table
+from [Sales].[Orders]
+
+
+insert into [Sales].[Orders2] values(NULL, 1, '20090212', '20090212',
+'20090212', 1, 123.00, N'abc', N'abc', N'abc',
+N'abc', N'abc', N'abc');
+
+--running below code will result with empty statement:
+select custid, companyname
+from [Sales].[Customers]
+where custid not in (select custid from [Sales].[Orders2])
+
+--the last expression might be expanded with using customerid 22: 22 NOT IN (1, 2, NULL) => UNKNOWN
+-- when IN predicate is used against a subquery that returns at least one NULL (UNKNOWN) operator the outer query always returns an emty set
+--to avoid such situation - 1) column with id should be defined as NOT NULL, 
+--2) NULL values should be excluded in the subquery
+
+select custid, companyname
+from [Sales].[Customers]
+where custid not in (select custid from [Sales].[Orders2] where custid is not null)
+
+--3) use NOT EXIST instead of NOT IN (always returns TRUE or FALSE never UNKNOWN):
+select custid, companyname
+from [Sales].[Customers] C
+where not exists (select * 
+				 from [Sales].[Orders2] O
+				 where C.custid=O.custid)
+
+
+--***************************************************NEW TABLE WITH SHIPPERS:
+create table Sales.MyShippers(
+	shipper_id int not null,
+	companyname nvarchar(40) not null,
+	phone nvarchar(24) not null,
+	constraint PK_MyShippers primary key (shipper_id)
+)
+insert into Sales.MyShippers values(1, N'Shipper GVSUA', N'(503) 555-0137'),
+(2, N'Shipper ETYNR', N'(425) 555-0136'),
+(3, N'Shipper ZHISN', N'(415) 555-0138');
+
+--**************************************************************************************************************************
+
+--shippers who shipped orders to customer 43:
+select top 5 * from [Sales].[Orders]
+select top 5 * from [Sales].[MyShippers]
+
+select custid, companyname 
+from [Sales].[Orders] O
+	left join [Sales].[MyShippers] MS
+		on O.shipperid=MS.shipper_id
+where custid=43
+
+--query that returns all orders placed on the last day of activity that can be found in the Orders table
+select top 5 * from [Sales].[Orders]
+declare @maxdate as date = (select MAX(orderdate) from [Sales].[Orders])
+--select @maxdate
+
+select orderid, orderdate, custid, empid
+from [Sales].[Orders]
+where orderdate=@maxdate
+
+--query that returns all orders placed by the customer(s) who placed the highest number of orders. Note that more than one customer might have the same number of orders:
+select top 5 * from [Sales].[Orders]
+
+declare @maxord as int = (select top 1 with ties custid
+							from [Sales].[Orders]
+							group by custid
+							order by count(orderid) desc)
+--select @maxord
+
+select custid, orderid, orderdate, empid
+from [Sales].[Orders] 
+where custid=@maxord
+
+-- query that returns employees who did not place orders on or after May 1, 2008:
+select top 5 * from [HR].[Employees]
+select top 5 * from [Sales].[Orders]
+
+select empid, firstname, lastname
+from [HR].[Employees]
+where empid not in (select empid 
+					from [Sales].[Orders]
+					where orderdate >='20080501')
+
+
+--query that returns countries where there are customers but not employees:
+select top 5 * from [Sales].[Customers]
+select top 5 * from [HR].[Employees]
+
+select distinct(country) 
+from [Sales].[Customers]
+where country not in (select country from [HR].[Employees])
+
+-- query that returns for each customer all orders placed on the customer’s last day of activity:
+select top 5 * from [Sales].[Orders]
+
+select custid, orderid, orderdate, empid
+from [Sales].[Orders] O1
+where orderdate= (select MAX(orderdate) 
+					from [Sales].[Orders] O2
+					where O1.custid=O2.custid) --allows to split and verify max value for the customers
+order by custid
+
+-- query that returns customers who placed orders in 2007 but not in 2008:
+select top 5 * from [Sales].[Customers]
+select top 5 * from [Sales].[Orders]
+
+SELECT custid, companyname
+FROM Sales.Customers AS C
+WHERE EXISTS
+	(SELECT *
+	FROM Sales.Orders AS O
+	WHERE O.custid = C.custid
+	AND O.orderdate >= '20070101'
+	AND O.orderdate < '20080101')
+AND NOT EXISTS
+	(SELECT *
+	FROM Sales.Orders AS O
+	WHERE O.custid = C.custid
+	AND O.orderdate >= '20080101'
+	AND O.orderdate < '20090101');
+
+
+--query that returns customers who ordered product 12:
+select top 5 * from [Sales].[Customers]
+select top 5 * from [Sales].[Orders]
+select top 5 * from [Sales].[OrderDetails]
+
+select distinct(C.custid), C.companyname, OD.productid
+from [Sales].[Customers] C
+	left join [Sales].[Orders] SO
+		on C.custid=SO.custid
+	left join [Sales].[OrderDetails] OD
+		on SO.orderid=OD.orderid
+where productid=12
+
+
+--query that calculates a running-total quantity for each customer and month:
+select top 5 * from [Sales].[CustOrders]
+
+select custid, ordermonth, qty, (select SUM(qty) 
+								from [Sales].[CustOrders] CO2 
+								where CO1.custid=CO2.custid and CO2.ordermonth<=CO1.ordermonth) as running_qty
+from [Sales].[CustOrders] CO1
+order by custid
+
+
+
+
 
 
 
