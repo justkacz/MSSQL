@@ -432,11 +432,224 @@ where productid=12
 --query that calculates a running-total quantity for each customer and month:
 select top 5 * from [Sales].[CustOrders]
 
-select custid, ordermonth, qty, (select SUM(qty) 
-								from [Sales].[CustOrders] CO2 
-								where CO1.custid=CO2.custid and CO2.ordermonth<=CO1.ordermonth) as running_qty
+select custid, ordermonth, qty, 
+	(select SUM(qty) 
+	from [Sales].[CustOrders] CO2 
+	where CO1.custid=CO2.custid and CO2.ordermonth<=CO1.ordermonth) as running_qty
 from [Sales].[CustOrders] CO1
 order by custid
+
+
+--*******************************************************************TABLE EXPRESSIONS:
+--DERIVED TABLE - defined in the FROM clause:
+-- * ORDER BY clause serves as part of the specification of the filter (top or offset-fetch), besides presentation
+-- * all columns must have names (column aliases)
+-- * all column names must be unique (might be achieved by adding aliases)
+-- * column aliases might be used earlier than in ORDER BY clause
+
+select top 5 * from [Sales].[Orders]
+
+-- query that returns the number of customers in each year
+-- with derived table:
+select orderyear, COUNT(distinct custid) as numcust
+	from (select YEAR(orderdate) as orderyear, custid
+			from [Sales].[Orders]) D
+group by orderyear
+
+--stadard way:
+select YEAR(orderdate), COUNT(distinct custid) as numcust
+from [Sales].[Orders]
+group by YEAR(orderdate)
+
+
+--query that returns order years and the number of customers handled in each year only for years in which more than 70 customers were handled:
+select orderyear,  custnum
+from (select YEAR(orderdate) as orderyear, COUNT(distinct custid) as custnum
+		from [Sales].[Orders]
+		group by YEAR(orderdate)) D
+where custnum>70 
+
+--CTEs => COMMON TABLE EXPRESSIONS:
+-- * several CTEs in one ststement do not have to refer to each other, they do not have to be nested
+-- * alias declared in one CTE might be used in another when there is a reference to CTE in the FROM clause
+
+
+--WITH <CTE_Name>[(<target_column_list>)]
+--AS
+--(
+--	<inner_query_defining_CTE>
+--)
+--	<outer_query_against_CTE>;
+
+-- CTE called USACusts, that returns all customers from the United States:
+with USACusts as
+(
+	select custid from [Sales].[Customers]
+	where country ='USA'
+)
+select * from USACusts
+
+--query that returns order years and the number of customers handled in each year only for years in which more than 70 customers were handled:
+with C1 as 
+(
+	select YEAR(orderdate) as yearorder, custid
+	from [Sales].[Orders]
+),
+C2 as 
+(
+	select yearorder, COUNT(distinct custid) as numcust 
+	from C1														-- reference to the first CTE C1
+	group by yearorder
+)
+select yearorder, numcust
+from C2
+where numcust >70
+
+-- multiple references in CTE - returns change in the number of customers:
+with yearly_count as
+(	
+	select YEAR(orderdate) orderyear, COUNT(distinct(custid)) numcust
+	from [Sales].[Orders]
+	group by YEAR(orderdate)
+)
+
+select YC1.orderyear, YC1.numcust, coalesce(YC1.numcust-YC2.numcust, '-') as growth
+from yearly_count YC1
+	left join yearly_count YC2
+	on YC1.orderyear=YC2.orderyear +1
+
+
+-- VIEWS:
+-- * views and inline table-valued functions - are reusable, their deinitions are stored as database objects
+-- * stored procedure sp_refreshview or sp_refreshsqlmodule, usefule when new column is added to the table based on which the view is created
+-- * ORDER BY clause can be used in views only with TOP, OFFSET-FETCH, or FOR XML
+
+IF OBJECT_ID('Sales.USACusts') IS NOT NULL
+	DROP VIEW Sales.USACusts;
+GO
+
+CREATE VIEW Sales.USACusts
+AS
+SELECT
+	custid, companyname, contactname, contacttitle, address,
+	city, region, postalcode, country, phone, fax
+FROM Sales.Customers
+WHERE country = N'USA';
+GO
+
+
+select top 5 * from Sales.USACusts
+
+
+-- diplaying the definition of the view:
+--function:
+select OBJECT_DEFINITION(OBJECT_ID('Sales.USACusts'))
+
+-- or stored procedure:
+exec sp_helptext 'Sales.USACusts'
+
+-- adding ENCRYPTION to make definition of the view unavailable:
+alter view Sales.USACusts with ENCRYPTION
+as 
+
+SELECT
+	custid, companyname, contactname, contacttitle, address,
+	city, region, postalcode, country, phone, fax
+FROM Sales.Customers
+WHERE country = N'USA';
+
+select OBJECT_DEFINITION(OBJECT_ID('Sales.USACusts')) -- results with NULL
+
+-- WITH SCHEMABINDING:
+--It indicates that referenced objects cannot be dropped and that referenced columns cannot be dropped or altered
+
+alter view Sales.USACusts with SCHEMABINDING
+as
+
+SELECT
+	custid, companyname, contactname, contacttitle, address,
+	city, region, postalcode, country, phone, fax
+FROM Sales.Customers
+WHERE country = N'USA';
+
+alter table Sales.Customers
+drop column contacttitle		-- error: "The object 'USACusts' is dependent on column 'contacttitle'" 
+
+
+-- a new row added to the view will be also added to the original table, even if it does not meet the condition in the view's WHERE clause:
+insert into Sales.USACusts(companyname, contactname, contacttitle, address, city, region, postalcode, country, phone, fax)
+values(N'Customer ABCDE', N'Contact ABCDE', N'Title ABCDE', N'Address ABCDE', N'London', NULL, N'12345', N'UK', N'012-3456789', N'012-3456789') --country = UK
+
+select * from Sales.USACusts where country ='UK' --empty set
+select * from Sales.Customers where country ='UK' and companyname like '%ABC%' --returns customer with id 92
+
+-- WITH CHECK OPTION - prevents modifications that conflict with view's filter
+alter view Sales.USACusts 
+as
+SELECT
+	custid, companyname, contactname, contacttitle, address,
+	city, region, postalcode, country, phone, fax
+FROM Sales.Customers
+WHERE country = N'USA'
+with check option;
+
+insert into Sales.USACusts(companyname, contactname, contacttitle, address, city, region, postalcode, country, phone, fax)
+values(N'Customer ABCDE', N'Contact ABCDE', N'Title ABCDE', N'Address ABCDE', N'London', NULL, N'12345', N'UK', N'012-3456789', N'012-3456789')
+--error message: "The attempted insert or update failed..."
+
+delete from [Sales].[Customers]
+where custid>91
+
+-- INLINE TABLE VALUED FUNCTION:
+-- * like views but also supports input parameters
+
+if OBJECT_ID('dbo.GetCustOrders') is not null
+	drop function dbo.GetCustOrders
+go
+
+create function dbo.GetCustOrders (@cust_id as int) returns table
+as
+return
+	SELECT orderid, custid, empid, orderdate, requireddate,
+		shippeddate, shipperid, freight, shipname, shipaddress, shipcity,
+		shipregion, shippostalcode, shipcountry
+	from [Sales].[Orders]
+	where custid=@cust_id
+go
+
+-- quering orders made by customer 1:
+select orderid, custid, orderdate 
+from dbo.GetCustOrders(1) as O
+
+-- TVF as part of join:
+select O.orderid, O.custid, OD.productid, OD.qty
+from dbo.GetCustOrders(1) O
+	left join [Sales].[OrderDetails] OD
+	on O.orderid=OD.orderid
+
+
+
+-- APPLY OPERATOR:
+-- * operates on two input tables
+-- * is very similar to a cross join, the difference between the join and APPLY operator becomes evident when you have a table-valued expression on the right side 
+--   and you want this table-valued expression to be evaluated for each row from the left table expression.
+-- * the APPLY operator allows to join two table expressions; the right table expression is processed every time for each row from the left table expression.
+-- * two variants: CROSS APPLY (like INNER JOIN ) and OUTER APPLY (like LEFT OUTER JOIN): the same results might be achieved with using JOIN
+--  but  the need of APPLY arises if there is a table-valued expression on the right part (with JOINs you cannot bind a value/variable from the outer query 
+--  to the function as a parameter) and in some cases the use of the APPLY operator boosts performance of the query
+
+
+--a join query between the derived table and the Orders table to return the orders with the maximum order date for each employee
+select top 5 * from [Sales].[Orders]
+
+select empid, MAX(orderdate) lastorder
+from [Sales].[Orders]
+group by empid
+
+select empid, lastorder
+from (select empid, MAX(orderdate) lastorder
+			from [Sales].[Orders]
+			group by empid) O1
 
 
 
