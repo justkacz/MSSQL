@@ -225,7 +225,7 @@ select custid
 from [Sales].[Customers]
 where custid not in (select custid from [Sales].[Orders] );
 
---creating new table Orders:
+--creating a new table Orders:
 use TSQL2012
 if OBJECT_ID('dbo.Orders', 'U') is not null drop table dbo.Orders; 
 create table dbo.Orders(orderid int not null constraint Pkey primary key)
@@ -646,12 +646,196 @@ select empid, MAX(orderdate) lastorder
 from [Sales].[Orders]
 group by empid
 
-select empid, lastorder
-from (select empid, MAX(orderdate) lastorder
+select O1.empid, O2.lastorder, O1.orderid, custid
+from [Sales].[Orders] O1
+	join (select empid, MAX(orderdate) lastorder
 			from [Sales].[Orders]
-			group by empid) O1
+			group by empid) O2
+	on O1.empid=O2.empid
+	and O1.orderdate=O2.lastorder
 
 
+-- query that calculates a row number for each order based on orderdate, orderid ordering:
+select orderid, orderdate, custid, empid, ROW_NUMBER() over(order by orderdate, orderid) rownum
+from [Sales].[Orders]
+
+--query that returns rows with row numbers 11 through 20 based on the row number definition from above example:
+
+--Window functions (such as the ROW_ NUMBER function) are only allowed in the SELECT and ORDER BY clauses of a query, and not directly
+-- in the WHERE clause.
+
+with C1
+as
+(
+	select orderid, orderdate, custid, empid, ROW_NUMBER() over(order by orderdate, orderid) as rownum
+	from [Sales].[Orders]
+)
+select orderid, orderdate, custid, empid, rownum from C1 
+where rownum >10 and rownum<21
+
+--solution that uses a recursive CTE and returns the management chain leading to Zoya Dolgopyatova (employee ID 9):
+select top 5 * from [HR].[Employees]
+
+select empid, mgrid, firstname, lastname from [HR].[Employees]
+
+with EMP 
+as
+(
+	select empid, mgrid, firstname, lastname
+	from [HR].[Employees]
+	where empid=9
+
+	union all
+
+	select C.empid, C.mgrid, C.firstname, C.lastname
+	from EMP E
+		join [HR].[Employees] C
+		on E.mgrid=C.empid
+)
+select * from EMP
+
+--view that returns the total quantity for each employee and year
+select top 5 * from [Sales].[Orders]
+select top 5 * from [Sales].[OrderDetails]
+
+create view Sales.VEmpOrders
+as 
+	select O.empid, year(O.orderdate) as orderyear, sum(qty) order_qty
+		from [Sales].[Orders] O
+			left join [Sales].[OrderDetails] OD
+			on O.orderid=OD.orderid
+	group by empid, year(O.orderdate)
+
+select * from Sales.VEmpOrders order by empid, orderyear
+
+--query against Sales.VEmpOrders that returns the running total quantity for each employee and year
+select empid, orderyear, order_qty, (select SUM(order_qty)
+									from Sales.VEmpOrders S1
+									where S2.empid=S1.empid and S2.orderyear>=S1.orderyear) as runn_qty
+from Sales.VEmpOrders S2
+order by empid, orderyear
+
+
+--an inline function that accepts as inputs a supplier ID (@supid AS INT) and a requested number of products (@n AS INT). The function should return @n products with the highest unit prices that
+--are supplied by the specified supplier ID:
+select top 5 * from [Production].[Products]
+
+create function prodn(@supid AS INT, @n AS INT) returns table
+as
+	return
+		select supplierid, productname, unitprice 
+		from [Production].[Products]
+		where supplierid = @supid
+		order by unitprice desc
+		offset 0 rows
+		fetch next @n rows only
+
+select * from prodn(5,2)
+
+-- query that returns for each supplier, the two most expensive products using cross apply (like inner join) and above function prodn
+select top 5 * from [Production].[Suppliers]
+
+
+
+select S.supplierid, S.companyname, P.productid, P.productname, P.unitprice
+from [Production].[Suppliers] S
+	cross apply prodn(S.supplierid, 2) P -- like inner join, 
+
+
+--SET OPERATORS:
+-- * applied between two input sets (=mulisets)
+-- * MULTISET - might contain DUPLICATES
+-- * SET - only UNIQUE values
+-- * SET operators: UNION (DISTINCT and ALL), INTERSECT (DISTINCT), and EXCEPT (DISTINCT).
+-- * UNION - unifies the results of two input queries. If a row appears in any of the input sets, it will appear in the result of the UNION operator; UNION (=DISTINCT, returns SET), UNION ALL (resturns MULTISET), 
+-- * two queries involved cannot have ORDER BY clause (query with an ORDER BY clause = CURSOR), ORDER BY might be applied only to the result operator
+-- * two queries must provide result with the same number of columns and compatible data types (= the data type that is lower in terms of data type precedence must be implicitly convertible to the higher data types)
+-- * the names of the columns in the result set are determined by the firs query
+-- * when it's comparing rows - two NULLs are considered as equal
+-- * if no potential exists for duplicates the UNION ALL is recommended - removes the costs incurred by SQL checking for duplicates
+
+-- * INTERSECT - set of all elements that belong to two sets, eliminates duplicate rows from the two input multisets (=turning them to SETs) and returns only rows that appear in both sets
+--   as an alternative might be used INNER JOIN or EXISTS - but comparison with NULL values will yield UNKNOWN and such row will be filtered out, 
+
+
+-- * EXCEPT (= DIFFERENCE ) -  first eliminates duplicate rows from the two input multisets—turning them to sets—and then returns only rows that appear in the first set but not the second.
+
+-- * PRECEDENCE: with multiple set operators, first INTERSECT is evaluated, then UNION or EXCEPT based on order of appearance 
+			--	 () parentheses
+			--   1) INTERSECT 
+			--	 2) UNION, EXCEPT 
+	
+
+-- query that generates a virtual auxiliary table of 10 numbers in the range 1 through 10 without using a looping construct:
+select 1 as n
+union all
+select 2
+union all
+select 3
+union all
+select 4
+union all
+select 5
+union all
+select 6
+union all
+select 7
+union all
+select 8
+union all
+select 9
+union all
+select 10;
+
+
+--query that returns customer and employee pairs that had order activity in January 2008 but not in February 2008
+select top 5 * from [Sales].[Orders]
+
+--????????????????????????
+--select custid, empid 
+--from [Sales].[Orders] S1
+--where exists (select * from [Sales].[Orders] S2 where S1.orderid=S2.orderid and S2.orderdate >='20080101' and S2.orderdate <'20080201')
+--		and not exists (select * from [Sales].[Orders] S2 where S1.orderid=S2.orderid and S2.orderdate >='20080201' and S2.orderdate <'20080301')
+
+
+select custid, empid 
+from [Sales].[Orders]
+where orderdate >='20080101' and orderdate <'20080201'
+except
+select custid, empid 
+from [Sales].[Orders]
+where orderdate >='20080201' and orderdate <'20080301'
+
+--query that returns customer and employee pairs that had order activity in both January 2008 and February 2008
+select custid, empid 
+from [Sales].[Orders]
+where orderdate >='20080101' and orderdate <'20080201'
+intersect
+select custid, empid 
+from [Sales].[Orders]
+where orderdate >='20080201' and orderdate <'20080301'
+
+--query that returns customer and employee pairs that had order activity in both January 2008 and February 2008 but not in 2007
+(select custid, empid 
+from [Sales].[Orders]
+where orderdate >='20080101' and orderdate <'20080201'
+intersect
+select custid, empid 
+from [Sales].[Orders]
+where orderdate >='20080201' and orderdate <'20080301')
+except
+select custid, empid 
+from [Sales].[Orders]
+where orderdate >='20070101' and orderdate <'20080101'
+
+-- query that returns country, region, city from Employees and Suppliers and in each segment rows should be serted by country, region, and city
+select country, region, city
+from (select 1 as constr, country, region, city
+	  from [HR].[Employees]
+	union all
+	  select 2 as constr, country, region, city
+	  from [Production].[Suppliers]) as D
+order by constr, country, region, city 
 
 
 
