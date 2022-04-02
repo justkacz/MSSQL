@@ -828,7 +828,7 @@ select custid, empid
 from [Sales].[Orders]
 where orderdate >='20070101' and orderdate <'20080101'
 
--- query that returns country, region, city from Employees and Suppliers and in each segment rows should be serted by country, region, and city
+-- query that returns country, region, city from Employees and Suppliers and each segment rows should be serted by country, region, and city
 select country, region, city
 from (select 1 as constr, country, region, city
 	  from [HR].[Employees]
