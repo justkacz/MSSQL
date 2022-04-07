@@ -305,7 +305,7 @@ from [Sales].[Customers]
 where custid not in (select custid from [Sales].[Orders2])
 
 --the last expression might be expanded with using customerid 22: 22 NOT IN (1, 2, NULL) => UNKNOWN
--- when IN predicate is used against a subquery that returns at least one NULL (UNKNOWN) operator the outer query always returns an emty set
+-- when IN predicate is used against a subquery that returns at least one NULL (UNKNOWN) operator the outer query always returns an empty set
 --to avoid such situation - 1) column with id should be defined as NOT NULL, 
 --2) NULL values should be excluded in the subquery
 
@@ -520,8 +520,8 @@ from yearly_count YC1
 
 
 -- VIEWS:
--- * views and inline table-valued functions - are reusable, their deinitions are stored as database objects
--- * stored procedure sp_refreshview or sp_refreshsqlmodule, usefule when new column is added to the table based on which the view is created
+-- * views and inline table-valued functions - are reusable, their definitions are stored as database objects
+-- * stored procedure sp_refreshview or sp_refreshsqlmodule, useful when new column is added to the table based on which the view is created
 -- * ORDER BY clause can be used in views only with TOP, OFFSET-FETCH, or FOR XML
 
 IF OBJECT_ID('Sales.USACusts') IS NOT NULL
@@ -750,7 +750,7 @@ from [Production].[Suppliers] S
 -- * UNION - unifies the results of two input queries. If a row appears in any of the input sets, it will appear in the result of the UNION operator; UNION (=DISTINCT, returns SET), UNION ALL (resturns MULTISET), 
 -- * two queries involved cannot have ORDER BY clause (query with an ORDER BY clause = CURSOR), ORDER BY might be applied only to the result operator
 -- * two queries must provide result with the same number of columns and compatible data types (= the data type that is lower in terms of data type precedence must be implicitly convertible to the higher data types)
--- * the names of the columns in the result set are determined by the firs query
+-- * the names of the columns in the result set are determined by the first query
 -- * when it's comparing rows - two NULLs are considered as equal
 -- * if no potential exists for duplicates the UNION ALL is recommended - removes the costs incurred by SQL checking for duplicates
 
@@ -828,7 +828,7 @@ select custid, empid
 from [Sales].[Orders]
 where orderdate >='20070101' and orderdate <'20080101'
 
--- query that returns country, region, city from Employees and Suppliers and rows in each segment  should be serted by country, region, and city
+-- query that returns country, region, city from Employees and Suppliers and rows in each segment should be sorted by country, region, and city
 select country, region, city
 from (select 1 as constr, country, region, city
 	  from [HR].[Employees]
