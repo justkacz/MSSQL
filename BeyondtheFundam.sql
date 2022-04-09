@@ -39,7 +39,7 @@ select top 5 * from Sales.OrderValues;
 
 select custid, orderid, val, 
 		isnull(lag(val) over(partition by custid order by orderdate, orderid), 0) as prev_val, --dealing with NULL values
-		lead(val, 1, 0) over(partition by custid order by orderdate, orderid)as next_val --third argument specifies value which should replace NULL
+		lead(val, 1, 0) over(partition by custid order by orderdate, orderid)as next_val --third argument specifies the value which should replace NULL
 from Sales.OrderValues;
 
 -- query that returns a value of the first/last customer's order:
@@ -419,3 +419,422 @@ where exists (
 	from [Sales].[Orders]
 	where custid = 1)
 
+
+-- MERGING DATA:
+-- merge the contents of the CustomersStage table (the source) into the Customers table (the target).
+-- target table name (BASE TABLE) in the MERGE clause and the source table name in the USING clause
+
+IF OBJECT_ID('dbo.CustomersMerge', 'U') IS NOT NULL DROP TABLE dbo.CustomersMerge;
+GO
+CREATE TABLE dbo.CustomersMerge
+(
+custid INT NOT NULL,
+companyname VARCHAR(25) NOT NULL,
+phone VARCHAR(20) NOT NULL,
+address VARCHAR(50) NOT NULL,
+CONSTRAINT PK_CustomersMerge PRIMARY KEY(custid)
+);
+
+INSERT INTO dbo.CustomersMerge(custid, companyname, phone, address)
+VALUES
+(1, 'cust 1', '(111) 111-1111', 'address 1'),
+(2, 'cust 2', '(222) 222-2222', 'address 2'),
+(3, 'cust 3', '(333) 333-3333', 'address 3'),
+(4, 'cust 4', '(444) 444-4444', 'address 4'),
+(5, 'cust 5', '(555) 555-5555', 'address 5');
+
+IF OBJECT_ID('dbo.CustomersStageM', 'U') IS NOT NULL DROP TABLE dbo.
+CustomersStageM;
+GO
+CREATE TABLE dbo.CustomersStageM
+(
+custid INT NOT NULL,
+companyname VARCHAR(25) NOT NULL,
+phone VARCHAR(20) NOT NULL,
+address VARCHAR(50) NOT NULL,
+CONSTRAINT PK_CustomersStage PRIMARY KEY(custid)
+);
+INSERT INTO dbo.CustomersStageM(custid, companyname, phone, address)
+VALUES
+(2, 'AAAAA', '(222) 222-2222', 'address 2'),
+(3, 'cust 3', '(333) 333-3333', 'address 3'),
+(5, 'BBBBB', 'CCCCC', 'DDDDD'),
+(6, 'cust 6 (new)', '(666) 666-6666', 'address 6'),
+(7, 'cust 7 (new)', '(777) 777-7777', 'address 7');
+
+-- query that merges the contents of the CustomersStageM table (the source, table from which the data will be uploaded) into the CustomersMerge table (the target, table that will be updated)
+-- (add customers who does not exist and update the attributes of customers that already exist)
+-- = target table will be updated with records from the source table
+
+MERGE INTO dbo.CustomersMerge as TGT
+using CustomersStageM as SRC
+ON TGT.custid = SRC.custid
+when matched then
+	update set
+	TGT.companyname = SRC.companyname,
+	TGT.phone = SRC.phone,
+	TGT.address = SRC.address
+when not matched then
+	insert (custid, companyname, phone, address)
+	values (SRC.custid, SRC.companyname, SRC.phone, SRC.address)
+WHEN NOT MATCHED BY SOURCE THEN										-- all id numbers which do not appear in the source table will be deleted from the final output 
+DELETE;
+
+select * from dbo.CustomersMerge
+
+-- above statement updates all items independently also if they are the same in both tables - below query updates only different elements (optimized solution):
+MERGE dbo.CustomersMerge as TGT
+	using CustomersStageM as SRC
+		on TGT.custid = SRC.custid
+when matched and
+	(TGT.companyname <> SRC.companyname OR
+	TGT.phone <> SRC.phone OR
+	TGT.address <> SRC.address) then
+		update set
+		TGT.companyname = SRC.companyname,
+		TGT.phone = SRC.phone,
+		TGT.address = SRC.address
+when not matched then
+	insert(companyname, phone, address)
+	values(SRC.companyname, SRC.phone, SRC.address);
+
+
+select * from CustomersMerge
+
+-- MODIFYING DATA THROUGHT TABLE EXPRESSIONS:
+-- not only SELECT but also another DML statements (INSERT, UPDATE, DELETE, and MERGE) are allowed against table expressions
+-- RESTRICTIONS:
+-- * If the query defining the table expression joins tables, in the same modification statement only one of the sides of the join
+--   allowed to affect
+-- * column that is a result of calculation cannot be updated, 
+-- * INSERT statements must specify values for any columns in the underlying table that do not have implicit values. A column can get a value implicitly if it allows NULL marks, has a default
+-- value, has an identity property, or is typed as ROWVERSION.
+
+-- query that updates columns after join: 
+select top 5 * from Sales.OrderDetails
+select top 5 * from dbo.Orders
+
+update OD
+	set discount += 0.05
+from Sales.OrderDetails OD
+	join dbo.Orders O
+		on OD.orderid = O.orderid
+where O.custid =1
+
+-- or using CTE - update statement relates to the CTE alias:
+
+with C
+as (
+	SELECT O.custid, OD.orderid, OD.productid, OD.discount, OD.discount + 0.05 AS newdiscount
+	from Sales.OrderDetails OD
+	join dbo.Orders O
+		on OD.orderid = O.orderid 
+)
+update C
+	set discount=newdiscount
+
+-- or using a derived table (aliases created in derived table can be used in the outer statement):
+update D
+	set discount=newdiscount	
+from (SELECT
+	O.custid, OD.orderid, OD.productid, OD.discount, OD.discount + 0.05 AS newdiscount
+	from Sales.OrderDetails OD
+	join dbo.Orders O
+		on OD.orderid = O.orderid
+	where O.custid=1
+) as D;
+
+-- an example where CTE is only possible solution:
+if OBJECT_ID('dbo.T1') is not null drop table dbo.T1;
+
+create table dbo.T1 (col1 INT, col2 INT);
+go
+
+insert into dbo.T1(col1) values (10),(20),(30);
+select * from T1
+
+-- query that updates col2 as a result of an expression with the ROW_NUMBER() function:
+update T1
+	set col2 = ROW_NUMBER() over(order by col1)  -- error -> WINDOW FUNCTIONS can only appear in the SELECT or ORDER BY clause
+
+-- the only solution using CTE:
+with C
+as 
+(
+	Select col1, col2, ROW_NUMBER() over(order by col1) as rownum
+	from  T1
+)
+update C
+	set col2=rownum
+
+select * from T1
+
+-- MODIFICATIONS with TOP and OFFSET-FETCH:
+-- * ORDER BY cannot be used for the TOP option with modification
+-- DELETE TOP(50) FROM dbo.Orders -> will delete random items, without preserving any order
+
+-- using CTE as a solution:
+-- new table for testing:
+create table dbo.OrdDetMerge (
+	orderid INT NOT NULL,
+	custid INT NULL,
+	empid INT NOT NULL,
+	orderdate DATETIME NOT NULL,
+	requireddate DATETIME NOT NULL,
+	shippeddate DATETIME NULL,
+	shipperid INT NOT NULL,
+	freight MONEY NOT NULL
+		CONSTRAINT DFT_Orders3_freight DEFAULT(0),
+	shipname NVARCHAR(40) NOT NULL,
+	shipaddress NVARCHAR(60) NOT NULL,
+	shipcity NVARCHAR(15) NOT NULL,
+	shipregion NVARCHAR(15) NULL,
+	shippostalcode NVARCHAR(10) NULL,
+	shipcountry NVARCHAR(15) NOT NULL,
+		CONSTRAINT PK_Orders3 PRIMARY KEY(orderid)
+);
+insert into dbo.OrdDetMerge
+select * from [Sales].[Orders]
+
+with C
+as
+(
+	select top(50) *
+	from dbo.OrdDetMerge
+	order by orderid
+)
+delete from C
+
+select * from dbo.OrdDetMerge
+
+-- query that updates the 50 orders with the highest order ID values, increasing their freight values by 10:
+with C
+as
+(
+	 select top (50) *
+	 from dbo.OrdDetMerge
+	 order by orderid desc
+)
+update C
+	set freight+=10
+
+-- offset-fetch instead of
+with C
+as
+(
+	 select *
+	 from dbo.OrdDetMerge
+	 order by orderid desc
+	 offset 0 rows
+	 fetch FIRST 50 rows only
+)
+delete from C
+
+-- OUTPUT clause:
+-- allows to define the attributes and expressions that should be returned:
+-- * INSERT -> inserted
+-- * DELETE -> deleted
+-- * UPDATE -> inserted to see new rows, deleted to see changed rows
+
+with C
+as
+(
+	select top (5) *
+	from dbo.OrdDetMerge
+	order by orderid desc	
+)
+delete from C
+output deleted.custid, deleted.orderid --without this clause, as an output would be only the number of rows affected
+
+-- update with output:
+update dbo.OrdDetMerge
+	set freight+=10
+output 
+	inserted.orderid as orderid,
+	deleted.freight as oldfreight,
+	inserted.freight as newfreight
+where custid=51
+
+-- creating new table to store output results with changes:
+create table dbo.ProductsAudit(
+productid int,
+colname varchar(20), 
+oldval varchar(20), 
+newval varchar(20))
+
+
+
+INSERT INTO dbo.ProductsAudit(productid, colname, oldval, newval)
+select c_id, theaction, oldcompanyname, newcompanyname
+from(
+MERGE INTO dbo.CustomersMerge as TGT
+using CustomersStageM as SRC
+ON TGT.custid = SRC.custid
+when matched then
+	update set
+	TGT.companyname = SRC.companyname,
+	TGT.phone = SRC.phone,
+	TGT.address = SRC.address
+when not matched then
+	insert (custid, companyname, phone, address)
+	values (SRC.custid, SRC.companyname, SRC.phone, SRC.address)
+output 
+$action AS theaction, 
+inserted.custid as c_id,
+deleted.companyname AS oldcompanyname,
+inserted.companyname AS newcompanyname,
+deleted.phone AS oldphone,
+inserted.phone AS newphone,
+deleted.address AS oldaddress,
+inserted.address AS newaddress) as M;
+
+select * from dbo.ProductsAudit
+
+-- table for below exercises:
+IF OBJECT_ID('dbo.CustomersExc', 'U') IS NOT NULL DROP TABLE dbo.CustomersExc;
+CREATE TABLE dbo.CustomersExc
+(
+custid INT NOT NULL PRIMARY KEY,
+companyname NVARCHAR(40) NOT NULL,
+country NVARCHAR(15) NOT NULL,
+region NVARCHAR(15) NULL,
+city NVARCHAR(15) NOT NULL);
+
+insert into CustomersExc values(100, 'Coho Winery', 'USA', 'WA', 'Redmond')
+
+-- query that inserts into the dbo.Customers table all customers from Sales.Customers who placed orders:
+
+insert into CustomersExc
+select custid, companyname, country, region, city
+from Sales.Customers C
+where exists (select *
+			from [Sales].[Orders] O
+			where C.custid=O.custid)
+
+
+--SELECT INTO statement to create and populate the dbo.Orders4 table with orders from the Sales.Orders table that were placed in the years 2006 through 2008
+-- 1) orders which were placed between 2006 and 2008:
+
+Select *
+into dbo.Orders4 -- a new table does not have to be created earlier
+from [Sales].[Orders]
+	where orderdate >= '20060101' and orderdate < '20080101'
+
+Select * from Orders4
+
+--Delete from the dbo.Orders table orders placed by customers from Brazil.
+select top 5 * from dbo.Orders
+select top 5 * from [Sales].[Customers]
+
+
+delete from dbo.Orders
+where exists (select * 
+			from [Sales].[Customers] C
+			where Orders.custid=C.custid
+			and country = 'Brazil')
+
+-- or using delete syntax based on join:
+delete from O
+from dbo.Orders as O
+	join [Sales].[Customers] C   --join serves as a filtering purpose
+		on C.custid=O.custid
+where country = 'Brazil'
+
+-- or using merge statement:
+
+merge dbo.Orders TRG
+using [Sales].[Customers] SRC
+	on SRC.custid=TRG.custid
+when matched then delete;
+
+-- query that updates the dbo.Customers table and changes all NULL region values to <None>. Then the OUTPUT clause must be used to show the custid, oldregion, and newregion
+select * from [dbo].[Customers]
+
+update [dbo].[Customers]
+	set region = '<None>'
+output
+deleted.custid as custid, 
+deleted.region as oldregion,
+inserted.region as newregion
+where region is null
+
+-- query that updates all orders in the dbo.Orders table that were placed by United Kingdom customers and sets their shipcountry, shipregion, and shipcity values to the country, region, and city values of the corresponding customers
+select *
+into dbo.Orders5 
+from [dbo].[Orders4]
+
+select top 5 * from [dbo].[Orders5]
+select top 5 * from [dbo].[Customers]
+
+select * from [dbo].[Orders5] O
+join [dbo].[Customers] C
+on O.custid=C.custid
+where C.country='UK'
+
+
+
+merge into [dbo].[Orders5] TRG
+using [dbo].[Customers] SRC
+on TRG.custid=SRC.custid and SRC.country='UK'
+when matched then 
+	update set
+	TRG.shipcountry=SRC.country,
+	TRG.shipcity=SRC.city,
+	TRG.shipregion=SRC.region
+
+output
+deleted.shipcountry as oldcountry,
+deleted.shipcity as oldcity,
+deleted.shipregion as oldregion,
+inserted.shipcountry as newcountry,
+inserted.shipcity as newcity,
+inserted.shipregion as newregion;
+
+-- or by using update solution based on join;
+update O	
+	set 
+	shipcountry = C.country,
+	shipregion = C.region,
+	shipcity = C.city
+from [dbo].[Orders5] O
+	join [dbo].[Customers] C
+		on O.custid=C.custid
+where C.country='UK'
+
+-- or by using CTE
+with  CTE_UP
+as
+(	select O.shipcountry AS ocountry, C.country AS ccountry,
+			O.shipregion AS oregion, C.region AS cregion,
+			O.shipcity AS ocity, C.city AS ccity
+	from [dbo].[Orders5] O
+	join [dbo].[Customers] C
+		on O.custid=C.custid
+	where C.country='UK'
+)
+update CTE_UP
+set ocountry=ccountry, ocity=ccity, oregion=cregion;
+
+
+-- ***************************************************************************TRANSACTIONS AND CONCURRENCY:
+-- TRANSACTION is a unit of work that might include multiple activities that query and modify data and that can also change data definition.
+--BEGIN TRAN (or TRANSACTION) -> COMMIT TRAN or COLLBACK TRAN (or TRANSACTION) - if transaction should not be commited
+
+-- IMPLICIT_TRANSACTIONS - by default OFF, changing to ON allows to start transaction without BEGIN TRAN keywords, but the transaction's end must be marked with commit or rollback
+
+-- ACID properties: 
+-- *  atomicity - if errors are encountered during the transaction before the commit statement, all changes are not considered and undone
+--				(exception:  primary key violation or lock expiration timeout)
+-- *  consistency
+-- *  isolation - control access: if the data is in the level of consistency that those transactions expect (locking - default in an on premises server, readers require shared locks; row versioning - shared locks are not required, if the current state of
+--             the data is inconsistent, the reader gets an older consistent state)
+-- *  durability - data changes are always written to the database’s transaction log on disk before they are written to the data portion of the database on disk, When the system starts, either normally or after a system failure, SQL Server inspects the transaction log of each database and runs a
+-- recovery process with two phases—redo and undo
+
+-- LOCKS - are control resources obtained by a transaction to guard data resources, preventing conflicting or incompatible access by other transactions.
+-- two main models: exclusive (if one transaction modifies rows, until the transaction is completed, another transaction cannot modify the same rows) and shared (multiple transactions can hold shared locks on the same data resource simultaneously):
+
+-- READ COMMITTED isolation level, if a transaction modifies rows, until the transaction completes, another transaction can’t read the same rows
+
+--SUMMARY: data that was modified by one transaction can neither be modified nor read (at least by default in an on-premises SQL Server installation) by another transaction until the first transaction finishes. And while data is
+-- being read by one transaction, it cannot be modified by another (at least by default in an on-premises SQL Server installation)
