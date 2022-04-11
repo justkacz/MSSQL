@@ -70,7 +70,7 @@ go 100
 
 select * from T1
 
--- IF...ELSE...:
+-- IF...ELSE IF...ELSE:
 -- else is activated when the predicate is FALSE or UNKNOWN
 -- multiple If/else statements the block statement must be declared: BEGIN ...END
 
@@ -257,37 +257,214 @@ pivot (sum(freight) for yearorder in ([2006],[2007],[2008])) as P
 order by shipperid
 
 -- with dynamic query the years might be extracted by using DISTINCT:
-DECLARE
-	@sql AS NVARCHAR(1000),
-	@orderyear AS INT,
-	@first AS INT;
+DECLARE @cols AS NVARCHAR(MAX),
+    @query  AS NVARCHAR(MAX);
 
-DECLARE C CURSOR FAST_FORWARD FOR
-	SELECT DISTINCT(YEAR(orderdate)) AS orderyear
-	FROM Sales.Orders
-	ORDER BY orderyear;
+set @cols = STUFF((SELECT distinct ',' + c.shipcountry
+            FROM [Sales].[Orders] c
+            FOR XML PATH('')),1,1,'')
 
-SET @first = 1;
-SET @sql = N'SELECT *
-FROM (SELECT shipperid, YEAR(orderdate) AS orderyear, freight
-FROM Sales.Orders) AS D
-PIVOT(SUM(freight) FOR orderyear IN(';
-OPEN C;
+--STUFF function - replaces characters; 
+-- without stuff the result of SELECT distinct ',' + c.shipcountry FROM [Sales].[Orders] c FOR XML PATH('') would be one row with distinct shipcountries separated with comma and with a comma mark as the first character
+-- STUFF - 1st argument => string to be replaced; 2nd => starting point; 3rd => the number of characters to be deleted; 4th => new replacing character
 
-FETCH NEXT FROM C INTO @orderyear;
-WHILE @@fetch_status = 0
-BEGIN
-	IF @first = 0
-		SET @sql = @sql + N','
-	ELSE
-		SET @first = 0;
-		SET @sql = @sql + QUOTENAME(@orderyear);
-FETCH NEXT FROM C INTO @orderyear;
-END
-CLOSE C;
-DEALLOCATE C;
-SET @sql = @sql + N')) AS P;';
-EXEC sp_executesql @stmt = @sql;
+set @query = 'SELECT * from 
+            (select shipperid
+                    , freight
+                    , shipcountry
+                from [Sales].[Orders]
+           ) x
+            pivot 
+            (
+                 sum(freight)
+                for shipcountry in (' + @cols + ')
+            ) p 
+			order by shipperid'
+
+execute(@query)
 
 -- ROUNTINES: objects that encapsulate code to calculate a result or to execute activity => USER DEFINED FUNCTIONS, STORED PROCEDURES, TRIGGERS
 --USER DEFINED FUNCTIONS: scalar and table-valued (can appear only in the from clause) UDFs
+
+-- function that returns the age of a person with a specified birthday at a specified event date
+create function dbo.getAge
+(
+	@birthdate as date,
+	@eventdate as date
+)
+returns int
+as 
+	begin
+		return
+			datediff(YEAR, @birthdate, @eventdate)
+				-case												-- if the @eventdate occurs before birthdate we need to substruct 1 
+					when 100 * month(@birthdate) + day(@birthdate)
+					< 100 * month(@eventdate) + day(@eventdate)
+					then 0 else 1
+				 end	
+	end
+
+select empid, firstname, lastname, birthdate, dbo.getAge(birthdate, sysdatetime()) as age
+from [HR].[Employees]
+
+-- STORED PROCEDURES:
+-- can have input and output parameters, 
+-- can return result sets of queries, and  are allowed to invoke code that has side effects
+-- stored procedure altered in one place in the database will be changed for all users of the procedure
+-- additional, separate authorizations might be granted
+
+-- stored procedure that returns orders placed by the declared customerid between two dates:
+if OBJECT_ID('Sales.GetCustomerOrders') is not null drop procedure Sales.GetCustomerOrders
+go
+
+create procedure Sales.GetCustomerOrders
+	@custid as int,
+	@fromdate as datetime,
+	@todate as datetime,
+	@rownum as int output -- output parameter
+as
+set nocount on -- will show how many rows were affected
+
+	select orderid, custid, empid, orderdate
+	from [Sales].[Orders]
+		where custid=@custid
+		and orderdate>=@fromdate
+		and orderdate<@todate
+
+set @rownum= @@ROWCOUNT -- built in global variable
+go
+
+-- execution of the procedure:
+declare @rc as int
+exec Sales.GetCustomerOrders
+@custid=1,
+@fromdate = '20070101',
+@todate = '20080101',
+@rownum = @rc OUTPUT;
+
+SELECT @rc AS numrows;
+
+
+--TRIGGER:
+-- a special kind of stored procedure, 
+-- whenever the event takes place, the trigger fires and the trigger’s code runs
+-- ROLLBACK TRAN within the trigger’s code causes a rollback of all changes that took place in the trigger, and also of all changes that took place in the transaction associated with the trigger
+-- function EVENTDATA  returns the event information as an XML value
+
+
+-- DML Triggers:
+-- * after -> after associated event finishes, only on permanent tables
+-- * instead of -> fires instead of the event it is associated with, permanent tables and views
+-- in the trigger’s code, you can access tables called INSERTED and DELETED that contain the rows that were affected by the modification that caused the trigger to fire.
+--  path: database > table (followed by ON in the trigger definition) > folder: Triggers
+
+IF OBJECT_ID('dbo.T3_Audit', 'U') IS NOT NULL DROP TABLE dbo.T3_Audit;
+IF OBJECT_ID('dbo.T3', 'U') IS NOT NULL DROP TABLE dbo.T3;
+
+CREATE TABLE dbo.T3
+(
+	keycol INT NOT NULL PRIMARY KEY,
+	datacol VARCHAR(10) NOT NULL
+);
+CREATE TABLE dbo.T3_Audit
+(
+	audit_lsn INT NOT NULL IDENTITY PRIMARY KEY,
+	dt DATETIME NOT NULL DEFAULT(SYSDATETIME()),
+	login_name sysname NOT NULL DEFAULT(ORIGINAL_LOGIN()),
+	keycol INT NOT NULL,
+	datacol VARCHAR(10) NOT NULL
+);
+go
+
+-- trigger inserts new records to the T3_Audit table if any new row is inserted into the original table T3:
+create trigger tgrT3 on dbo.T3 after insert
+as
+	set nocount on
+insert into dbo.T3_Audit(keycol, datacol)
+select keycol, datacol from inserted -- inserted = records inserted into T3 table
+go
+
+insert into T3 values (1,'a')
+insert into T3 values (2,'b')
+insert into T3 values (3,'c')
+insert into T3 values (4,'d')
+
+select * from T3
+select * from T3_Audit
+
+-- DDL TRIGGERS:
+-- at the database scope (e.g. create table) or the server scope (e.g. create database)
+-- supports only AFTER event (INSTEAD OF is not available)
+-- path: database > folder: Programmability > Database Triggers 
+
+IF OBJECT_ID('dbo.AuditDDLEvents', 'U') IS NOT NULL DROP TABLE dbo.AuditDDLEvents;
+
+CREATE TABLE dbo.AuditDDLEvents
+(
+	audit_lsn INT NOT NULL IDENTITY,
+	posttime DATETIME NOT NULL,
+	eventtype sysname NOT NULL,
+	loginname sysname NOT NULL,
+	schemaname sysname NOT NULL,
+	objectname sysname NOT NULL,
+	targetobjectname sysname NULL,
+	eventdata XML NOT NULL,
+	CONSTRAINT PK_AuditDDLEvents PRIMARY KEY(audit_lsn)
+);
+
+
+create trigger trg_ddl on database for DDL_DATABASE_LEVEL_EVENTS -- = event group that represents all DDL events on database level
+as
+	set nocount on
+	declare @eventdata as xml = eventdata()
+	insert into dbo.AuditDDLEvents(
+		posttime, eventtype, loginname, schemaname,
+		objectname, targetobjectname, eventdata)
+	values (
+		@eventdata.value('(/EVENT_INSTANCE/PostTime)[1]', 'VARCHAR(23)'),
+		@eventdata.value('(/EVENT_INSTANCE/EventType)[1]', 'sysname'),
+		@eventdata.value('(/EVENT_INSTANCE/LoginName)[1]', 'sysname'),
+		@eventdata.value('(/EVENT_INSTANCE/SchemaName)[1]', 'sysname'),
+		@eventdata.value('(/EVENT_INSTANCE/ObjectName)[1]', 'sysname'),
+		@eventdata.value('(/EVENT_INSTANCE/TargetObjectName)[1]', 'sysname'),
+		@eventdata);
+go
+
+create table dbo.ddltest(col1 int not null)
+alter table dbo.ddltest add col2 int null
+alter table dbo.ddltest alter column col2 int not null
+
+select * from AuditDDLEvents
+
+-- ERROR HANDLING:
+-- TRY...CATCH statement (together with BEGIN...END)
+-- inbuilt functions: 
+--		* ERROR_NUMBER()
+--		* ERROR_MESSAGE()
+--		* ERROR_LINE() - returns the line number when the error happened
+--		* ERROR_PROCEDURE() - returns the name of the procedure in which the error happened
+-- sys.messages - catalog view with a list of error numbers and messages
+
+create procedure dbo.ErrorHandler
+as
+	PRINT 'Error Number : ' + CAST(ERROR_NUMBER() AS VARCHAR(10));
+	PRINT 'Error Message : ' + ERROR_MESSAGE();
+	PRINT 'Error Severity: ' + CAST(ERROR_SEVERITY() AS VARCHAR(10));
+	PRINT 'Error State : ' + CAST(ERROR_STATE() AS VARCHAR(10));
+	PRINT 'Error Line : ' + CAST(ERROR_LINE() AS VARCHAR(10));
+	PRINT 'Error Proc : ' + COALESCE(ERROR_PROCEDURE(), 'Not within proc');
+go
+
+
+
+begin try
+	print 10/0   -- or 10/0 will run catch statement
+	print 'No errors'
+end try
+begin catch
+	print 'Error due to ' + lower(ERROR_MESSAGE())
+	exec dbo.ErrorHandler
+end catch
+
+select * from sys.messages
+
