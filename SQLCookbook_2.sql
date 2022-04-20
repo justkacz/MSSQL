@@ -363,3 +363,58 @@ select DATENAME(DW, start_date), COUNT(*)
 from x
 group by DATENAME(DW, start_date)
 option(maxrecursion 400)  -- default recursion = 100 
+
+-- determining the date difference between the current record and the next record (next after duplicated records):
+-- for each records from 17.11 the next record is 27.11
+select ename, hiredate 
+from emp2
+where deptno=10
+order by hiredate
+
+select deptno, ename, hiredate, hd, datediff(day,hiredate, hd) as diff
+from (
+	select deptno, ename, hiredate,
+		lead(hiredate, cnt-rn+1) over(order by hiredate) as hd  --contains value from next row, second argument determines the size of step
+	from (select deptno, ename,hiredate,
+		COUNT(*) over(PARTITION by hiredate) as cnt,
+		row_number() over (PARTITION by hiredate order by empno) as rn
+		from emp2
+		where deptno=10
+		) x 
+		) y
+
+
+
+--******************************************************DATE MANIPULATION:
+--determining whether the current year is a leap year:
+
+select case when try_cast(concat(year(getdate()),'-02-29')as date) is null 
+		then 'non leap year' 
+		else 'leap year' 
+	end as leap_year;
+
+
+--determining the number of days in a year:
+select DATEDIFF(DAY, start_date, end_date)+1 as no_days -- add 1 as the
+from (
+select start_date, dateadd(day, -1,DATEADD(YEAR, 1, start_date)) as end_date
+from (
+		select cast(cast(YEAR(GETDATE()) as varchar) + '-01-01' as date) as start_date
+) x 
+) y
+
+select dateadd(d,-datepart(dy,getdate())+1,getdate()) curr_year
+select datepart(dy,getdate())
+
+select datediff(d,curr_year,dateadd(yy,1,curr_year))
+from (
+select dateadd(d,-datepart(dy,getdate())+1,getdate()) curr_year  --= 1st of January, datepart -> dy = the number of days from the beginning of year
+) x
+
+-- extracting time parts from current date:
+select datepart( hour, getdate()) hr,
+	datepart( minute,getdate()) min,
+	datepart( second,getdate()) sec,
+	datepart( day, getdate()) dy,
+	datepart( month, getdate()) mon,
+	datepart( year, getdate()) yr
