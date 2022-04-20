@@ -187,3 +187,179 @@ from emp
 group by deptno
 
 -- running total:
+select ename, sal, 
+	sum(sal) over(order by sal, empno)  -- including PK in the order by clause allows to avoid duplicates (sal and empno create unique combination)
+from emp
+
+-- calculating the mode (the element that appears most frequently)
+
+select sal
+from(
+	select sal, 
+			DENSE_RANK() over (order by cnt desc) as rnk -- order desc the highest cnt value will be the first element
+	from (select sal, COUNT(*) as cnt -- salary 3000 occurs the most frequently
+		from emp
+		where deptno=20
+		group by sal) x ) y
+where rnk =1
+
+
+-- calculating a median (a value of the middle member of a set of ordered elements)
+select distinct(PERCENTILE_CONT(0.5) within group(order by sal) over()) as median
+from emp
+where deptno =20
+
+-- determining the percentage of a total - what percentage of all salaries are the salaries in deptno 10:
+
+select distinct(cast(100*(cast(dep_sum as float)/cast(total as float)) as numeric(5,2))) as '%'
+from (select deptno, SUM(sal) over(partition by deptno) dep_sum, SUM(sal) over() as total
+from emp) x
+where deptno =10
+
+-- computing averages without high and low values (reducing the effect of skew = trimmed mean):
+select avg(sal)
+from (
+	select sal, min(sal) over() as min_sal,
+			MAX(sal) over() as max_sal
+	from emp) x
+where sal not in (min_sal, max_sal)
+
+-- converting alphanumeric string into number:
+declare @x as varchar(40)= 'paul123f321'
+
+select cast(replace(TRANSLATE(@x, 'abcdefghijklmnopqrstuvwxyz', REPLICATE('#', 26)),'#', '') as int) as number
+
+-- changing values in a running total:
+create view V7 (id,amt,trx)
+as
+select 1, 100, 'PR' union all
+select 2, 100, 'PR'  union all
+select 3, 50, 'PY' union all
+select 4, 100, 'PR' union all
+select 5, 200, 'PY' union all
+select 6, 50, 'PY' 
+
+select * from v7
+-- PR = purchase, PY = payment , if status is purchase -> its value should be added to the running total, else if status is payment - > should be subtracted
+select id,
+		case
+			when trx='PR' then 'Purchase'
+			when trx='PY' then 'Payment'
+		end as status,
+	   amt,
+	   SUM(r) over(order by id) as run_total
+from (select id, trx, amt, case
+			when trx='PR' then amt
+			when trx='PY' then -amt
+		end as r
+	from v7) x
+
+-- finding outliers using the median absolute deviation:
+-- 1) deviation = absolute difference between each value and median
+-- 2) median absolute deviation = median from deviation computed in point 1st
+
+
+
+with median(median) 
+as
+		(select distinct PERCENTILE_CONT(0.5) within group(order by sal) over()
+		from emp),
+
+	Deviation (Deviation)
+	as
+		(Select abs(sal-median)
+		from emp join median on 1=1),
+
+	MAD (MAD)
+	as
+		(select DISTINCT PERCENTILE_CONT(0.5) within group(order by deviation) over()
+		from Deviation )
+
+
+select abs(sal-MAD)/MAD, sal, ename, job
+from MAD join emp on 1=1
+
+
+
+--*************************************************************DATE ARITHMETIC:
+--dateadd function to add/substract different units of time:
+
+select hiredate as HD,
+	DATEADD(DAY, -5, hiredate) as hd_minus_5D,
+	dateadd(day,5,hiredate) as hd_plus_5D,
+	dateadd(month,-5,hiredate) as hd_minus_5M,
+	dateadd(month,5,hiredate) as hd_plus_5M,
+	dateadd(year,-5,hiredate) as hd_minus_5Y,
+	dateadd(year,5,hiredate) as hd_plus_5Y
+from emp
+where deptno = 10
+
+-- the difference in days between the HIREDATEs of employee ALLEN and employee WARD.
+select DATEDIFF(day, (select hiredate from emp where ename='ALLEN'),(select hiredate from emp where ename='WARD')) as day_diff
+
+--or:
+select DATEDIFF(day, HD_Allen, HD_Ward) as date_diff
+from(
+	select hiredate as HD_Allen
+	from emp 
+	where ename='ALLEN') x,
+	(select hiredate as HD_Ward
+	from emp 
+	where ename='WARD') y
+
+
+-- the difference in working days:
+declare @DateFrom as datetime = '20220404' --(select hiredate from emp where ename='ALLEN');
+declare @DateTo as datetime = '20220420' --(select hiredate from emp where ename='WARD');
+ 
+declare @TotalWorkDays as int = DATEDIFF(DAY, @DateFrom, @DateTo)
+				    -(DATEDIFF(WEEK, @DateFrom, @DateTo) * 2)  -- week => datediff considers week as a combination of Saturday and Sunday =1, so to get the number of weekend days the result must be mutiplied by 2
+					   -CASE  -- checking if start/end days are weekends, if yes must be subtracted
+                                    WHEN DATENAME(WEEKDAY, @DateFrom) = 'Sunday'
+                                    THEN 1
+                                    ELSE 0
+                                END+CASE
+                                        WHEN DATENAME(WEEKDAY, @DateTo) = 'Saturday'
+                                        THEN 1
+                                        ELSE 0
+                                    END;
+
+select @TotalWorkDays
+
+-- the difference in hours, minutes, seconds between the HIREDATEs of employee ALLEN and employee WARD.
+select DATEDIFF( hour, HD_Allen, HD_Ward) as hours,
+	DATEDIFF(minute, HD_Allen, HD_Ward) as minutes,
+	DATEDIFF(second, HD_Allen, HD_Ward) as seconds
+from
+	(select hiredate as HD_Allen
+	from emp 
+	where ename='ALLEN') x,
+	(select hiredate as HD_Ward
+	from emp 
+	where ename='WARD') y
+
+-- declaring the first and the last day of the current year:
+select start as start_date, dateadd(day, -1, DATEADD(YEAR, 1, start)) as end_date
+from (select cast(cast(year(getdate()) as varchar)+'-01-01' as date) as start) x
+
+
+-- query that counts the number of weekdays in the year
+-- creating recursive CTE to populate the whole year with days starting from the 1st of January:
+
+with x (start_date, end_date)
+as
+-- anchor member:
+(select start as start_date, dateadd(day, -1, DATEADD(YEAR, 1, start)) as end_date
+from (select cast(cast(year(getdate()) as varchar)+'-01-01' as date) as start) anc
+
+union all
+--recursive part => adding one day starting from start_date:
+select DATEADD(DAY, 1, start_date), end_date
+from x
+where DATEADD(DAY, 1, start_date)<=end_date
+)
+
+select DATENAME(DW, start_date), COUNT(*)
+from x
+group by DATENAME(DW, start_date)
+option(maxrecursion 400)  -- default recursion = 100 
