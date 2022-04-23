@@ -418,3 +418,278 @@ select datepart( hour, getdate()) hr,
 	datepart( day, getdate()) dy,
 	datepart( month, getdate()) mon,
 	datepart( year, getdate()) yr
+
+
+-- determining the first and last days of a month
+select start_date, dateadd(MONTH, 1, start_date)-1 as end_date
+from (select dateadd(day,-datepart(D, getdate())+1,getdate()) as start_date --instead of datepart might be day(getdate())
+)x
+
+select DAY(GETDATE())
+
+-- determining all dates for a particular weekday throught a year starting from today:
+with x (start_date)
+as
+(
+	select start_date
+	from (select dateadd(day, -DAY(GETDATE())+1, GETDATE()) as start_date) anc
+	union all
+	select DATEADD(DAY, 1, start_date)
+	from x
+	where start_date<=CAST(cast(YEAR(GETDATE()) as varchar)+'-12-31' as date)
+)
+
+select start_date
+from x
+where datename(dw, start_date) = 'Friday'
+option(maxrecursion 400) 
+
+-- or the number of particular weekday till the end of the year:
+select datename(dw, start_date), COUNT(*) as no_count
+from x
+group by datename(dw, start_date)
+having datename(dw, start_date) = 'Friday'
+option(maxrecursion 400) 
+
+-- determining the date of the first and last occurences of a specific weekday in a month:
+with x (start_date)
+as 
+(
+	select start_date--, dateadd(MONTH, 1, start_date)-1 as end_date
+	from (select DATEADD(DAY, -DAY(getdate())+1, GETDATE()) as start_date) anc
+	union all
+	select DATEADD(DAY, 1, start_date)
+	from x
+	where start_date<dateadd(MONTH, 1, DATEADD(DAY, -DAY(getdate())+1, GETDATE()))  --start_date cannot be used in where clause => infinite loop
+
+)
+select min(start_date) as 'first', MAX(start_date) as 'last'
+from x
+where DATENAME(dw, start_date) = 'Friday'
+option(maxrecursion 400) 
+
+
+
+
+-- CREATING A CALENDAR:
+with x(start_date,dm,mth,dw,wk)
+as (
+select start_date,		-- 01.04.2022
+	day(start_date) dm,		-- 1 -> only day from the start_date
+	datepart(m,start_date) mth,		-- 4 -> month
+	datepart(dw,start_date) dw,		-- 6 -> dw = weekday; which day of the week (it was Friday, starting from Sunday)
+		case when datepart(dw,start_date) = 1	-- if weekday = Sunday move to the previous week
+			then datepart(ww,start_date)-1		-- 14 -1 the number of week from the beggining of year
+		else datepart(ww,start_date)
+		end wk
+from (select DATEADD(DAY, -DAY(getdate())+1, GETDATE()) as start_date) x -- the first day of the month
+union all
+select dateadd(d,1,start_date), day(dateadd(d,1,start_date)), mth,  -- selecting the same parameters as in the above anchor statement but incrementing start_date by 1 day
+		datepart(dw,dateadd(d,1,start_date)),
+		case when datepart(dw,dateadd(d,1,start_date)) = 1
+			then datepart(wk,dateadd(d,1,start_date)) -1
+		else datepart(wk,dateadd(d,1,start_date))
+		end
+from x
+where datepart(m,dateadd(d,1,start_date)) = mth)
+
+select max(case dw when 2 then dm end) as Mo,  -- each group of week will have only one value for particular weekday, selecting max allows to exclude nulls
+		max(case dw when 3 then dm end) as Tu,
+		max(case dw when 4 then dm end) as We,
+		max(case dw when 5 then dm end) as Th,
+		max(case dw when 6 then dm end) as Fr,
+		max(case dw when 7 then dm end) as Sa,
+		max(case dw when 1 then dm end) as Su
+--select dw, dm, wk
+from x
+group by wk--group by each week
+order by wk
+
+select datepart(ww,start_date)
+from (select DATEADD(DAY, -DAY(getdate())+1, GETDATE()) as start_date) x
+
+select datepart(ww,'2022-01-31')
+
+-- listing quarters start and end dates for the year:
+with x (start_date)
+as
+(
+	select start_date
+	from (select DATEADD(DAY, -DAtepart(dy, getdate())+1, getdate()) as start_date) y
+	union all
+	select DATEADD(DAY, 1, start_date)
+	from x
+	where start_date < DATEADD(year, 1, DATEADD(DAY, -DAtepart(dy, getdate())+1, getdate()))-1
+)
+select min(start_date) first_q, Max(start_date) last_q
+from x
+group by DATEPART(QUARTER, start_date)
+option(maxrecursion 400)
+
+--counting the number of hires in each month - even if no employee was hired:
+--below query does not include zeroes:
+select data, COUNT(*) hired_emp
+from (select convert(varchar(7), hiredate, 126) as data
+from emp) x
+group by data
+
+-- including all months:
+with x (start_date, end_date)
+as
+(
+	select start_date, end_date
+	from (select min(hiredate)- DATEPART(DY, MIN(hiredate))+1 as start_date,
+		DATEadd(year, 1, max(hiredate)- DATEPART(DY, Max(hiredate))) as end_date
+	from emp) y
+	union all
+	select dateadd(day, 1, start_date), end_date
+	from x 
+	where start_date<end_date
+)
+select convert(varchar(7), start_date, 126), convert(varchar(7), emp.hiredate, 126),  COUNT(emp.hiredate),
+sum(COUNT(emp.hiredate)) over()
+from x
+left join emp
+	on x.start_date=emp.hiredate
+group by convert(varchar(7), start_date, 126), convert(varchar(7), emp.hiredate, 126)
+order by 1
+option(maxrecursion 4000)
+
+
+-- searching on specific units of time - select the employees who were hired in February, December or Sunday:
+select ename, DATENAME(m, hiredate) as month, DATENAME(Dw, hiredate) as weekday
+from emp
+where DATENAME(m, hiredate) in ('February', 'December')
+	or DATENAME(Dw, hiredate) = 'Sunday'
+
+--query that finds which employees have been hired on the same month and weekday:
+select convert(varchar(7), e.hiredate, 126), string_agg(e.ename, ', ')--, m.hiredate
+from emp e
+	join emp m
+	on e.empno=m.empno
+where convert(varchar(7), e.hiredate, 126) = convert(varchar(7), m.hiredate, 126) and e.empno<m.empno
+group by convert(varchar(7), e.hiredate, 126)--, e.ename
+
+select e.ename + ' has been hired in the same month: '+ cast(month(e.hiredate) as varchar) + ' and weekday '+ DATEname(DW, e.hiredate) +' as '+m.ename
+,e.ename, month(e.hiredate) as month, DATEname(DW, e.hiredate) as weekday, convert(varchar(7), e.hiredate, 126), m.ename
+from emp e--, emp m
+	join emp m
+	--on convert(varchar(7), e.hiredate, 126) = convert(varchar(7), m.hiredate, 126)
+		on month(e.hiredate) = month(m.hiredate) 
+			and DATEPART(DW, e.hiredate) = DATEPART(DW, m.hiredate)
+			and e.empno<m.empno
+-- or: where e.empno<m.empno
+
+
+
+--***********************************************WORKING WITH RANGES:
+-- query that determines which rows represent a range of consecutive projects (end date of one project should be start date for another):
+
+-- using self join:
+select cast(r1.proj_id as varchar)+ ' ends and proj ' + cast(r2.proj_id as varchar) + ' starts', r1.proj_s, r1.proj_e
+from range r1, range r2
+	where r1.proj_e=r2.proj_s --and r1.proj_id<r2.proj_id
+	and r1.proj_id!=r2.proj_id
+
+-- or window function:
+select proj_id, proj_s, proj_e
+from (select proj_id, LEAD(proj_s) over (order by proj_id) as lead, proj_s, proj_e
+	from range) x
+where proj_e = lead
+
+-- query that returns the DEPTNO, ENAME, and SAL of each employee along with the difference in SAL between employees in the same department
+-- all employees hired on the same date (November 17) should evaluate their salary against another employee hired on next day in the future (not 17.11)
+
+-- incorrect - when hiredate is the same for several employees
+select deptno, ename, sal,  hiredate, SAL-lead as diff 
+from (select deptno, ename, sal,  hiredate, Lead(SAL) over(partition by deptno order by hiredate) as lead
+	from emp) x
+order by deptno
+
+-- correct solution - computing difference between the total number of rows with the same hiredate within each deptno and row number within each deptno -> using this result as a second argument in the lead function (how many rows skip)
+select deptno, ename, sal,  hiredate, SAL-lead as diff 
+from (select deptno, ename, sal,  hiredate, 
+		LEAD(sal, cnt-r+1) over (PARTITION by deptno order by hiredate) as lead,
+		r
+	from 
+	( select deptno, ename, sal,  hiredate, 
+		COUNT(*) over(partition by deptno, hiredate) as cnt, 
+		Row_number() over (PARTITION by deptno, hiredate order by hiredate) as r
+	 from emp3) x
+	) y
+order by deptno
+
+-- query that returns the groups of consecutive values:
+
+select proj_id, proj_s, proj_e, r, sum(r)over(order by proj_id) proj_grp
+from(select proj_id, proj_s, proj_e, 
+	case
+		when proj_s=lag(proj_e) over (order by proj_id) then 0 else 1  -- important to return 0 when result is true
+	end AS r															-- for the first element in the group returns 1, for the rest of elements in the group 0, hence the running sum for the whole group is increased by 1
+from range) x
+
+--finally:
+select MIN(proj_s), MAX(proj_e)
+from (select proj_id, proj_s, proj_e, r, sum(r)over(order by proj_id) proj_grp
+	from(select proj_id, proj_s, proj_e, 
+	case
+		when proj_s=lag(proj_e) over (order by proj_id) then 0 else 1  -- important to return 0 when result is true
+	end AS r
+from range) x
+) y
+group by proj_grp
+
+
+--query that returns the number of employees hired each year for the entire decade of the 2005s, but there are some years in which no employees were hired (including zeroes)
+select YEAR(hiredate), COUNT(*)
+from emp
+group by YEAR(hiredate)
+
+-- 1st way with recursive CTE:
+with x (fy, ly)
+as
+(
+	select fy, ly
+	from (select MIN(hiredate) as fy, DATEADD(YEAR, 10, MIN(hiredate)) ly
+			from emp
+			) y
+	union all
+	select DATEADD(YEAR, 1, fy), ly
+	from x
+	where DATEADD(YEAR, 1, fy)<= ly
+)
+
+select YEAR(fy), year(emp.HIREDATE), COUNT(emp.HIREDATE)
+from x
+	left join emp
+	on year(x.fy)=year(emp.HIREDATE)
+group by YEAR(fy), year(emp.HIREDATE)
+order by YEAR(fy)
+
+--2nd way:
+	-- shorter query that returns 10 consecutive years:
+	select top (10)
+			 year(min(hiredate)over())+(row_number()over(order by hiredate)-1) yr
+	from emp
+
+select yr, COUNT(e.HIREDATE) as no_emp
+from (select top (10)
+			 year(min(hiredate)over())+(row_number()over(order by hiredate)-1) yr
+	from emp) x
+left join emp e
+	on x.yr=year(e.HIREDATE)
+group by x.yr, year(e.HIREDATE)
+order by x.yr
+
+-- generating consecutive numeric values:
+with x (id)
+as
+(
+	select 1
+	union all
+	select id+1
+	from x
+	where id<10
+)
+select * from x
+
