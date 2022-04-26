@@ -1,4 +1,7 @@
 -- ******************************************************ADVANCED SEARCHING:
+-- Window functions are applied after the WHERE clause. To filter results after window functions have been evaluated, the windowing
+-- query must be put into an inline view and then filter on the results from that view
+
 --paginating through a result set:
 -- using window function row_number:
 select sal 
@@ -384,4 +387,99 @@ from emp
 select coalesce(job, 'TOTAL') as job, SUM(sal) as sal
 from emp
 group by job with rollup 
+
+-- query that finds the sum of all salaries by DEPTNO, and by JOB, for every JOB/ DEPTNO combination:
+select coalesce(cast(deptno as varchar), 'TOTAL FOR JOB'), coalesce(job, 'TOTAL FOR DEPT'), sum(sal)
+from emp
+group by cube(deptno, job)
+order by deptno desc, job desc 
+
+-- adding grouping in the select statement allows to identify which rows were grouped (marked as 0)
+select deptno, job, --cast(grouping(deptno) as varchar), GROUPING(job),
+	case
+		when cast(grouping(deptno) as varchar)+cast(GROUPING(job) AS varchar)='00' then 'TOTAL BY DEPT AND JOB'
+		when cast(grouping(deptno) as varchar)+cast(GROUPING(job) AS varchar)='11' then 'GRAND TOTAL FOR THE WHOLE TABLE'
+		when cast(grouping(deptno) as varchar)+cast(GROUPING(job) AS varchar)='01' then 'TOTAL BY DEPT '+ CAST(deptno AS varchar)
+		when cast(grouping(deptno) as varchar)+cast(GROUPING(job) AS varchar)='10' then 'TOTAL BY JOB ' + job
+	end as 'Total dept, job and all',
+	SUM(sal) as sal
+from emp
+group by cube(deptno, job)
+order by deptno desc, job desc 
+
+--GROUPING -> used with CUBE and ROLLUP -> allows to differentiate rows grouped by normal cube/rollup:
+-- 0 means that column is included in the group clause:
+select deptno, job, cast(grouping(deptno) as varchar), GROUPING(job), SUM(sal)
+from emp
+group by cube(deptno, job)
+order by deptno desc, job desc
+
+select ename, 
+		case when job='CLERK' then 1 else 0 end as 'IS_CLERK',
+		case when job='SALESMAN' then 1 else 0 end as 'IS_SALESMAN',
+		case when job='MANAGER' then 1 else 0 end as 'IS_MANAGER',
+		case when job='ANALYST' then 1 else 0 end as 'IS_ANALYST',
+		case when job='PRESIDENT' then 1 else 0 end as 'IS_PRESIDENT'
+from emp
+
+-- SPARK MATRIX:
+select --ename, 
+		case when job='CLERK' then ename else '' end as 'IS_CLERK',
+		case when job='SALESMAN' then ename else '' end as 'IS_SALESMAN',
+		case when job='MANAGER' then ename else '' end as 'IS_MANAGER',
+		case when job='ANALYST' then ename else '' end as 'IS_ANALYST',
+		case when job='PRESIDENT' then ename else '' end as 'IS_PRESIDENT'
+from emp
+
+-- aggregations over diferent groups/partitions simultaneously:
+-- query that for each employee returns the number of employees from the same department and job (two separate columns):
+
+select ename, deptno, COUNT(*) over(partition by deptno) as deptno_cnt,
+	job,
+	COUNT(*) over(partition by job) as job_cnt, 
+	COUNT(*) over(partition by deptno)+COUNT(*) over(partition by job) as total__dep_job,
+	count(*) over () as grand_total, 
+from emp
+
+-- aggregations over moving range of values, computing a sum for every 90 days -> subquery in the select statement:
+
+select hiredate, sal
+from emp
+
+select hiredate, sal, (select SUM(sal) from emp d
+						where d.hiredate between e.hiredate-90 and e.hiredate) runn_sum
+from emp e
+order by hiredate
+
+select e.hiredate,
+e.sal,
+(select sum(sal) from emp d
+where d.hiredate between e.hiredate-90
+and e.hiredate) as spending_pattern
+from emp e
+order by 1
+
+-- pivoting a result set with subtotals:
+-- query that for each department returns the managers in the department, and a sum of the salaries of the employees who work for those managers
+-- inner query that reurn subtotals for the mgr from each dept:
+select deptno, mgr, SUM(sal) as tot,
+		cast(GROUPING(deptno) as varchar)+ cast(GROUPING(mgr) as varchar) as flag  --flag 00 is the result of standard grouping not subtotals
+from emp
+where mgr is not null
+group by rollup(deptno,mgr)
+
+--pivoting - by using CASE clause:
+select mgr, 
+		sum(case when deptno=10 then tot else '' end) as 'dep_10',
+		sum(case when deptno=20 then tot else '' end) as 'dep_20',
+		sum(case when deptno=30 then tot else '' end) as 'dep_30',
+		sum(case when flag='11' then tot else '' end) as total
+		--,flag
+from (select deptno, mgr, SUM(sal) as tot,
+		cast(GROUPING(deptno) as varchar)+ cast(GROUPING(mgr) as varchar) as flag  --flag 00 is the result of standard grouping not subtotals
+	from emp
+	--where mgr is not null
+	group by rollup(deptno,mgr)) x
+group by mgr
+order by mgr desc
 

@@ -93,6 +93,14 @@ as
 select ename + cast(sal as varchar(10)) as data  
 from emp 
 
+create view pivot_dept
+as
+select
+	sum(case when deptno=10 then 1 else null end) as dept_10,
+	sum(case when deptno=20 then 1 else null end) as dept_20,
+	sum(case when deptno=30 then 1 else null end) as dept_30
+from emp
+
 create view v  
 as  
 select ename + ' ' + cast(deptno as varchar(5)) as d  

@@ -326,6 +326,26 @@ declare @TotalWorkDays as int = DATEDIFF(DAY, @DateFrom, @DateTo)
 
 select @TotalWorkDays
 
+-- FUNCTION THAT ADDS WORKING DAYS:
+CREATE FUNCTION ADDWD(@addDate AS DATE, @numDays AS INT)
+RETURNS DATETIME
+AS
+BEGIN
+    WHILE @numDays>0
+    BEGIN
+       SET @addDate=DATEADD(d,1,@addDate)
+       IF DATENAME(DW,@addDate)='saturday' SET @addDate=DATEADD(d,1,@addDate)
+       IF DATENAME(DW,@addDate)='sunday' SET @addDate=DATEADD(d,1,@addDate)
+
+       SET @numDays=@numDays-1
+    END
+
+    RETURN CAST(@addDate AS DATETIME)
+END
+GO
+
+select dbo.ADDWD(getdate(), 8)
+
 -- the difference in hours, minutes, seconds between the HIREDATEs of employee ALLEN and employee WARD.
 select DATEDIFF( hour, HD_Allen, HD_Ward) as hours,
 	DATEDIFF(minute, HD_Allen, HD_Ward) as minutes,
