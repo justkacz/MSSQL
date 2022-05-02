@@ -296,7 +296,7 @@ with workingTable (fibNum, nextNumber, index1)
 as
 	(select 0,1,1
 	union all
-	select fibNum+nextNumber,fibNum,index1+1
+	select fibNum+nextNumber,fibNum,index1+1    --fibNum becomes nextNumber parameter
 		from workingTable
 		where index1<20)
 

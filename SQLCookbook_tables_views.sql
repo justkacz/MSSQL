@@ -87,6 +87,39 @@ insert into range values (1 ,'01-JAN-2020', '02-JAN-2020'),
 						 (13, '28-JAN-2020', '29-JAN-2020'),
 						 (14, '29-JAN-2020', '30-JAN-2020')
 
+
+
+create table IT_research (deptno int, ename varchar(20))
+go
+
+insert into IT_research values (100,'HOPKINS')
+insert into IT_research values (100,'JONES')
+insert into IT_research values (100,'TONEY')
+insert into IT_research values (200,'MORALES')
+insert into IT_research values (200,'P.WHITAKER')
+insert into IT_research values (200,'MARCIANO')
+insert into IT_research values (200,'ROBINSON')
+insert into IT_research values (300,'LACY')
+insert into IT_research values (300,'WRIGHT')
+insert into IT_research values (300,'J.TAYLOR')
+
+create table IT_apps (deptno int, ename varchar(20))
+go
+insert into IT_apps values (400,'CORRALES')
+insert into IT_apps values (400,'MAYWEATHER')
+insert into IT_apps values (400,'CASTILLO')
+insert into IT_apps values (400,'MARQUEZ')
+insert into IT_apps values (400,'MOSLEY')
+insert into IT_apps values (500,'GATTI')
+insert into IT_apps values (500,'CALZAGHE')
+insert into IT_apps values (600,'LAMOTTA')
+insert into IT_apps values (600,'HAGLER')
+insert into IT_apps values (600,'HEARNS')
+insert into IT_apps values (600,'FRAZIER')
+insert into IT_apps values (700,'GUINN')
+insert into IT_apps values (700,'JUDAH')
+insert into IT_apps values (700,'MARGARITO')
+
 -- ************************************************************VIEWS:
 create view d  
 as  
@@ -167,4 +200,51 @@ select 3, 50, 'PY' union all
 select 4, 100, 'PR' union all  
 select 5, 200, 'PY' union all  
 select 6, 50, 'PY' 
+
+create view V8 as
+(
+	select 'ClassSummary' strings
+	union all
+	select '3453430278'
+	union all
+	select 'findRow 55'
+	union all
+	select '1010 switch'
+	union all
+	select '333'
+	union all
+	select 'threes'
+)
+
+create view v9
+as (
+select 'entry:stewiegriffin:lois:brian:' strings
+union all
+select 'entry:moe::sizlack:'
+union all
+select 'entry:petergriffin:meg:chris:'
+union all
+select 'entry:willie:'
+union all
+select 'entry:quagmire:mayorwest:cleveland:'
+union all
+select 'entry:::flanders:'
+union all
+select 'entry:robo:tchi:ken:'
+)
+
+create view V10
+as
+	select 1 student_id,
+	1 test_id,
+	2 grade_id,
+	1 period_id,
+	cast('02/01/2020' as datetime) test_date,
+	0 pass_fail
+	 union all
+	select 1, 2, 2, 1, cast('03/01/2020' as datetime), 1 union all
+	select 1, 3, 2, 1, cast('04/01/2020' as datetime), 0 union all
+	select 1, 4, 2, 2, cast('05/01/2020' as datetime), 0 union all
+	select 1, 5, 2, 2, cast('06/01/2020' as datetime), 0 union all
+	select 1, 6, 2, 2, cast('07/01/2020' as datetime), 0 
 
