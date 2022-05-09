@@ -164,22 +164,153 @@ select OrderID, OrderDate, ShippedDate, dbo.WD(OrderDate, ShippedDate) as Workin
 from [Orders]
 order by Working_days desc
 
--- efficiency comparison udf vs correlated query vs window function:
--- query that returns orders details which value exceeds the average order values of each client: 
+-- ****************************************************TABULAR FUNCTION - used in FROM clause:
+-- function that returns order number, date and order values for each client:
+create function CustDetails(@custid varchar(max))
+returns table
+as
+return
+(
+	select o.orderid, o.customerid, o.orderdate, od.Quantity*od.UnitPrice as OrdVal
+	from Orders o
+		join [dbo].[Order Details] od
+		on o.OrderID=od.OrderID
+		where customerid=@custid
+)
+drop function dbo.CustDetails
 
---join statement with subquery:
-select o.customerID, o.OrderID, sum(od.UnitPrice*od.Quantity) as OrdVal
-from [Orders] o
-	join [Order Details] od
-	on o.OrderID=od.OrderID
-group by o.CustomerID, o.OrderID
-having sum(od.UnitPrice*od.Quantity) >
-			(select avg(OrdVal) avgVal
-			 	from 
-				(select o2.CustomerID, o2.OrderID, sum(od2.UnitPrice * od2.Quantity) as OrdVal
-				from [Orders] o2
-				inner join [Order Details] od2
-					on o2.OrderID=od2.OrderID 
- 				where o.CustomerID=o2.CustomerID   --joining customers from outer and inner queries
-				group by o2.CustomerID, o2.OrderID) x) 
+select * from dbo.CustDetails('VINET')
 
+-- using tabular function with inner join to extract more details about selected customer:
+select c.*, cd.*
+from [dbo].[Customers] c
+	inner join dbo.CustDetails('VINET') cd
+	on c.CustomerID=cd.customerid
+
+-- APPLY -> allows to run function multiple times: (for each row cross join is applied (like inner join))
+select c.*, cd.*
+from [dbo].[Customers] c
+	cross apply dbo.CustDetails(c.customerid) cd  --(to include non matching rows outer apply must be used)
+where country='Spain'
+
+-- ***************************************************** BUILT IN FUNCTIONS:
+--extracting dial code, call prefix;
+select left(homephone, charindex(')', homephone))
+from [dbo].[Employees]
+
+-- product name with name length less than 10 chars:
+select ProductName, LEN(productname) 
+from [dbo].[Products]
+where LEN(productname)<10  -- function LEN is called two times for each record, using functions in the where clause has negative impact on efficiency
+
+-- extracting domain address:
+
+select WebPage, LEFT(WebPage, CHARINDEX('/', WebPage, 8)) as sub_str,
+CHARINDEX('/', WebPage, 8),  
+SUBSTRING(WebPage, 8,  CHARINDEX('/', WebPage, 8)-8)  --exp, startlocation, n -> how many elements
+from (
+	SELECT 'http://www.google.pl/next_page/' as WebPage
+	UNION
+	SELECT 'http://google.pl/sql-tutorial/' ) x
+
+-- extracting post code:
+select patindex('%[0-9][0-9]-[0-9][0-9][0-9]%', Adres) as position,		--patindex - returns the position of matching substring
+	substring(Adres, patindex( '%[0-9][0-9]-[0-9][0-9][0-9]%', Adres), 6) as postCode
+FROM
+(
+	SELECT '60-144 Poznañ' as Adres 
+	UNION
+	SELECT 'Poznañ, 60-186'
+	UNION 
+	SELECT 'Kod pocztowy 61-698, Poznañ' 
+	UNION 
+	SELECT 'Poznañ 61-698, Jana Paw³a 16' 
+ 
+) as Adresy
+
+-- STUFF(original, start_p, no_repl, replacing_string) vs REPLACE(original, old_char, new_char)
+
+--DATE TIME FUNCTIONS:
+SELECT SYSDATETIME(), 
+       SYSDATETIMEOFFSET(),
+       GETDATE(),
+       GETUTCDATE()
+
+-- the first day of the current month, the last day of the previous month:
+select GETDATE() -datepart(d,GETDATE()-1)  as firstday
+	,GETDATE() -datepart(d,GETDATE()) as lastday
+
+-- function that returns the first day of month:
+create function FirstDay(@data as datetime)
+returns datetime
+begin
+	set @data = (select @data- DATEPART(D, @data)+1) 
+	return @data
+
+end
+
+create function LastDay(@data datetime)
+returns datetime
+as 
+begin
+	set @data=(select DATEADD(m, 1, @data-DATEPART(D, @data)+1)-1)
+	return @data
+end
+
+select dbo.FirstDay('2022-07-20')
+select dbo.LastDay('2022-07-20')
+
+-- function that counts exact age:
+create function ExactAge(@birthdate datetime)
+returns int
+as
+begin
+	declare @wiek int
+	   set @wiek = (select datediff(YEAR, @birthdate, GETDATE())-
+						case 
+							when DATEPART(DY, GETDATE())< DATEPART(dy, DATEFROMPARTS(year(getdate()), MONTH(@birthdate), day(@birthdate))) then 1 else 0
+					end)
+	return @wiek
+end
+
+select dbo.ExactAge('1999-05-01')
+
+--MATH FUNCTIONS:
+--number from range 0-10 => formula: min + convert(int, (max-min+1)*RAND())
+select 0+ convert(int, (20-10+1)*RAND())
+
+--number from range 10-20:
+select 10+ convert(int, (20-10+1)*RAND())
+
+--ISDATE(), ISNUMERIC() - might be used in the select and where clauses e.g. to filter only rows with date format
+select ISDATE(GETDATE()), ISDATE( '2013/01/02' ), ISDATE( '20131402' )
+
+-- LEN()- returns the number of items, DATALENGTH()-returns the number of bytes (ASCII-> 1 byte per element, UNICODE->with N at the beginning, 2 bytes per element)
+select LEN('SQL tutorial')
+select DATALENGTH('SQL tutorial')
+select DATALENGTH(N'SQL tutorial')
+
+select orderid, sum(freight), max(suma)
+from
+(
+select orderid, freight, SUM(freight) over (partition by orderid) as suma
+from OrdDet) x
+group by orderid 
+
+--NTILE - split freight cost column over 4 equal groups with range frames:  in Python => pd.qcut()
+-- conclusion -> positive skew
+select nt, MIN(freight) as 'range_from',
+	MAX(freight) as 'range_to',
+	MAX(freight)-MIN(freight) as range_size,
+	COUNT(orderid) as no_orders
+from (
+select orderid, freight,
+	NTILE(4) over (order by freight) as nt
+from OrdDet) x
+group by nt
+
+-- **********************************************CONNECTION WITH REMOTE SERVER:
+--the list of available providers OLEDB (Object Linking and Embedding Database) :
+EXEC xp_enum_oledb_providers
+
+--universal library: MSDASQL
