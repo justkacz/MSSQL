@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="5/9/2022 6:03:46 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="L204LTP"
+  DTS:CreatorName="SAP-FLEX\jkaczmarek"
+  DTS:DTSID="{C34558B0-0D4F-4371-9319-CCAC0B5CB225}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.2000.180"
+  DTS:LocaleID="1045"
+  DTS:ObjectName="Package1"
+  DTS:PackageType="5"
+  DTS:VersionGUID="{A110C960-0DBF-4509-A5C2-EA0B8C6703E4}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables />
+  <DTS:Executables />
+</DTS:Executable>
