@@ -2,7 +2,7 @@
 <BuildLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <ProjectInfo>
     <Name>IntServicesProj1</Name>
-    <LastWriteTime>2022-05-09T14:55:34.6018414Z</LastWriteTime>
+    <LastWriteTime>2022-05-11T11:33:02.7970256Z</LastWriteTime>
     <LastKnownProtectionLevel>EncryptSensitiveWithUserKey</LastKnownProtectionLevel>
   </ProjectInfo>
   <LastBuildInfos>
@@ -13,12 +13,47 @@
     </ProjectBuildItemInfo>
     <ProjectBuildItemInfo>
       <Name>Transformation.dtsx</Name>
-      <LastWriteTime>2022-05-09T14:30:29.3648564Z</LastWriteTime>
+      <LastWriteTime>2022-05-10T07:47:13.8690192Z</LastWriteTime>
       <LastKnownProtectionLevel>EncryptSensitiveWithUserKey</LastKnownProtectionLevel>
     </ProjectBuildItemInfo>
     <ProjectBuildItemInfo>
       <Name>Multi_Condition.dtsx</Name>
       <LastWriteTime>2022-05-09T15:36:13.3230512Z</LastWriteTime>
+      <LastKnownProtectionLevel>EncryptSensitiveWithUserKey</LastKnownProtectionLevel>
+    </ProjectBuildItemInfo>
+    <ProjectBuildItemInfo>
+      <Name>MergeUnionall.dtsx</Name>
+      <LastWriteTime>2022-05-10T08:09:58.2513236Z</LastWriteTime>
+      <LastKnownProtectionLevel>EncryptSensitiveWithUserKey</LastKnownProtectionLevel>
+    </ProjectBuildItemInfo>
+    <ProjectBuildItemInfo>
+      <Name>UnionAll.dtsx</Name>
+      <LastWriteTime>2022-05-10T08:26:44.3199101Z</LastWriteTime>
+      <LastKnownProtectionLevel>EncryptSensitiveWithUserKey</LastKnownProtectionLevel>
+    </ProjectBuildItemInfo>
+    <ProjectBuildItemInfo>
+      <Name>MergeJoin.dtsx</Name>
+      <LastWriteTime>2022-05-11T11:37:35.353406Z</LastWriteTime>
+      <LastKnownProtectionLevel>EncryptSensitiveWithUserKey</LastKnownProtectionLevel>
+    </ProjectBuildItemInfo>
+    <ProjectBuildItemInfo>
+      <Name>ForEachLoop.dtsx</Name>
+      <LastWriteTime>2022-05-10T22:32:24.7728904Z</LastWriteTime>
+      <LastKnownProtectionLevel>EncryptSensitiveWithUserKey</LastKnownProtectionLevel>
+    </ProjectBuildItemInfo>
+    <ProjectBuildItemInfo>
+      <Name>ForLoopwithCond.dtsx</Name>
+      <LastWriteTime>2022-05-10T22:48:01.833192Z</LastWriteTime>
+      <LastKnownProtectionLevel>EncryptSensitiveWithUserKey</LastKnownProtectionLevel>
+    </ProjectBuildItemInfo>
+    <ProjectBuildItemInfo>
+      <Name>EventHandler.dtsx</Name>
+      <LastWriteTime>2022-05-11T10:59:55.649184Z</LastWriteTime>
+      <LastKnownProtectionLevel>EncryptSensitiveWithUserKey</LastKnownProtectionLevel>
+    </ProjectBuildItemInfo>
+    <ProjectBuildItemInfo>
+      <Name>MasterController.dtsx</Name>
+      <LastWriteTime>2022-05-11T11:32:59.9942598Z</LastWriteTime>
       <LastKnownProtectionLevel>EncryptSensitiveWithUserKey</LastKnownProtectionLevel>
     </ProjectBuildItemInfo>
   </LastBuildInfos>

@@ -1,25 +1,25 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="5/9/2022 6:03:46 PM"
   DTS:CreationName="Microsoft.Package"
   DTS:CreatorComputerName="L204LTP"
   DTS:CreatorName="SAP-FLEX\jkaczmarek"
-  DTS:DTSID="{C34558B0-0D4F-4371-9319-CCAC0B5CB225}"
+  DTS:DTSID="{29C14AE6-7C60-43E2-A6D3-8B497827D94E}"
   DTS:ExecutableType="Microsoft.Package"
   DTS:LastModifiedProductVersion="15.0.2000.180"
   DTS:LocaleID="1045"
   DTS:ObjectName="Package1"
   DTS:PackageType="5"
-  DTS:VersionBuild="3"
-  DTS:VersionGUID="{69DEAAF2-7569-4DD4-BAD0-62EEE94AFEB9}">
+  DTS:VersionBuild="10"
+  DTS:VersionGUID="{23248FF1-D44A-42B5-BD23-F4C3DFA7E05B}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[L204LTP\SQLEXPRESS.Northwind]"
       DTS:CreationName="OLEDB"
-      DTS:DTSID="{833B3AB2-1A28-4655-A191-BD89ACD87BF7}"
+      DTS:DTSID="{C2C79930-0CAB-43A7-B037-1956AFC3C3C7}"
       DTS:ObjectName="L204LTP\SQLEXPRESS.Northwind">
       <DTS:ObjectData>
         <DTS:ConnectionManager
@@ -31,7 +31,7 @@
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[S1]"
       DTS:CreationName="FLATFILE"
-      DTS:DTSID="{1133B8AD-AACE-4BCF-B78C-2A543293F8C3}"
+      DTS:DTSID="{6B4EA087-F7D4-4279-BF02-8AD788763346}"
       DTS:ObjectName="S1">
       <DTS:ObjectData>
         <DTS:ConnectionManager
@@ -51,7 +51,7 @@
               DTS:DataType="129"
               DTS:TextQualified="True"
               DTS:ObjectName="Custid"
-              DTS:DTSID="{20F531D3-796E-483E-8AD4-66B66401205E}"
+              DTS:DTSID="{9FCA7973-0467-46EA-A74F-B24F8C2C50F9}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -60,7 +60,7 @@
               DTS:DataType="129"
               DTS:TextQualified="True"
               DTS:ObjectName=" Name"
-              DTS:DTSID="{36125551-9EC6-45C0-8F34-2FC5D4E3F521}"
+              DTS:DTSID="{702027B1-CFAA-46EA-BC89-0332DD61888B}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -69,7 +69,7 @@
               DTS:DataType="129"
               DTS:TextQualified="True"
               DTS:ObjectName=" ShortName"
-              DTS:DTSID="{20FC3A77-4993-46D2-B5DC-88A39791EF6F}"
+              DTS:DTSID="{8488CC62-6DD1-46DB-AD91-E22CF61246F4}"
               DTS:CreationName="" />
           </DTS:FlatFileColumns>
         </DTS:ConnectionManager>
@@ -78,7 +78,7 @@
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[S2]"
       DTS:CreationName="FLATFILE"
-      DTS:DTSID="{51FC6B3D-1702-4916-991F-11316E1A60C8}"
+      DTS:DTSID="{C07B4A43-76CE-4701-A8EF-4FA136B59F5C}"
       DTS:ObjectName="S2">
       <DTS:ObjectData>
         <DTS:ConnectionManager
@@ -98,7 +98,7 @@
               DTS:DataType="129"
               DTS:TextQualified="True"
               DTS:ObjectName="Custid"
-              DTS:DTSID="{0B483716-CB52-4BC6-B0B2-FA6CFE27BFDB}"
+              DTS:DTSID="{8E54D5F4-FA7C-4FC7-B3CE-F61BF7C3BD5E}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -107,7 +107,7 @@
               DTS:DataType="129"
               DTS:TextQualified="True"
               DTS:ObjectName=" Name"
-              DTS:DTSID="{C851EBDD-E837-4841-A531-DEAB72203242}"
+              DTS:DTSID="{725DA19B-32F0-4A89-90DA-CDD8B7BA9DDF}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -116,7 +116,7 @@
               DTS:DataType="129"
               DTS:TextQualified="True"
               DTS:ObjectName=" ShortName"
-              DTS:DTSID="{4E154FAE-7B86-4BEF-AB7A-D18C87804400}"
+              DTS:DTSID="{40DECC72-4905-4DB6-B5D4-83AE87DCFB52}"
               DTS:CreationName="" />
           </DTS:FlatFileColumns>
         </DTS:ConnectionManager>
@@ -125,7 +125,7 @@
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[S3]"
       DTS:CreationName="FLATFILE"
-      DTS:DTSID="{AFFC1655-572E-4041-9C91-BBE1F1DE5831}"
+      DTS:DTSID="{CA033AF5-9A12-4C7B-A6DE-1DA9DFDDA0DF}"
       DTS:ObjectName="S3">
       <DTS:ObjectData>
         <DTS:ConnectionManager
@@ -145,7 +145,7 @@
               DTS:DataType="129"
               DTS:TextQualified="True"
               DTS:ObjectName="Custid"
-              DTS:DTSID="{DF5AAE2C-5AFC-43C6-B4B6-6297FF332C0F}"
+              DTS:DTSID="{812AAE1E-B0D1-43C0-9847-E2F8D1A8B3C0}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -154,7 +154,7 @@
               DTS:DataType="129"
               DTS:TextQualified="True"
               DTS:ObjectName=" Name"
-              DTS:DTSID="{1AFA76F5-9F47-4996-AB8B-45A106DC033A}"
+              DTS:DTSID="{B6E0EBEB-80D7-4BD2-969F-6BD2DD103610}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -163,7 +163,7 @@
               DTS:DataType="129"
               DTS:TextQualified="True"
               DTS:ObjectName=" ShortName"
-              DTS:DTSID="{B819501B-9BD1-46DB-B341-2487A2928309}"
+              DTS:DTSID="{F9319BE4-2768-47AC-83CA-818D02A20D19}"
               DTS:CreationName="" />
           </DTS:FlatFileColumns>
         </DTS:ConnectionManager>
@@ -176,7 +176,7 @@
       DTS:refId="Package\Data Flow Task"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
-      DTS:DTSID="{552E41A4-03F8-406F-AA54-728BAAF15588}"
+      DTS:DTSID="{59C173BD-137C-49D0-A56A-B675ECA1C42F}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
       DTS:ObjectName="Data Flow Task"
@@ -186,302 +186,6 @@
         <pipeline
           version="1">
           <components>
-            <component
-              refId="Package\Data Flow Task\Merge Merge (S1,S2) + S3"
-              componentClassID="Microsoft.Merge"
-              contactInfo="Merge;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
-              description="Combines rows from multiple sorted data flows into one sorted data flow. Unlike the Merge Join, all rows flow to the output. For example, combine two sorted lists of customers into a single sorted list. If sorting is not important, use the Union All transformation. "
-              name="Merge Merge (S1,S2) + S3"
-              version="1">
-              <inputs>
-                <input
-                  refId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Inputs[Merge Input 1]"
-                  name="Merge Input 1">
-                  <inputColumns>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Inputs[Merge Input 1].Columns[Custid]"
-                      cachedCodepage="1250"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName="Custid"
-                      cachedSortKeyPosition="1"
-                      lineageId="Package\Data Flow Task\Merge S1 + S2.Outputs[Merge Output 1].Columns[Custid]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\Data Flow Task\Merge Merge (S1,S2) + S3.Outputs[Merge Output 1].Columns[Custid]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Inputs[Merge Input 1].Columns[ Name]"
-                      cachedCodepage="1250"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName=" Name"
-                      lineageId="Package\Data Flow Task\Merge S1 + S2.Outputs[Merge Output 1].Columns[ Name]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\Data Flow Task\Merge Merge (S1,S2) + S3.Outputs[Merge Output 1].Columns[ Name]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Inputs[Merge Input 1].Columns[ ShortName]"
-                      cachedCodepage="1250"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName=" ShortName"
-                      lineageId="Package\Data Flow Task\Merge S1 + S2.Outputs[Merge Output 1].Columns[ ShortName]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\Data Flow Task\Merge Merge (S1,S2) + S3.Outputs[Merge Output 1].Columns[ ShortName]}</property>
-                      </properties>
-                    </inputColumn>
-                  </inputColumns>
-                  <externalMetadataColumns />
-                </input>
-                <input
-                  refId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Inputs[Merge Input 2]"
-                  name="Merge Input 2">
-                  <inputColumns>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Inputs[Merge Input 2].Columns[Custid]"
-                      cachedCodepage="1250"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName="Custid"
-                      cachedSortKeyPosition="1"
-                      lineageId="Package\Data Flow Task\Sort 2.Outputs[Sort Output].Columns[Custid]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\Data Flow Task\Merge Merge (S1,S2) + S3.Outputs[Merge Output 1].Columns[Custid]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Inputs[Merge Input 2].Columns[ Name]"
-                      cachedCodepage="1250"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName=" Name"
-                      lineageId="Package\Data Flow Task\Sort 2.Outputs[Sort Output].Columns[ Name]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\Data Flow Task\Merge Merge (S1,S2) + S3.Outputs[Merge Output 1].Columns[ Name]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Inputs[Merge Input 2].Columns[ ShortName]"
-                      cachedCodepage="1250"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName=" ShortName"
-                      lineageId="Package\Data Flow Task\Sort 2.Outputs[Sort Output].Columns[ ShortName]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\Data Flow Task\Merge Merge (S1,S2) + S3.Outputs[Merge Output 1].Columns[ ShortName]}</property>
-                      </properties>
-                    </inputColumn>
-                  </inputColumns>
-                  <externalMetadataColumns />
-                </input>
-              </inputs>
-              <outputs>
-                <output
-                  refId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Outputs[Merge Output 1]"
-                  isSorted="true"
-                  name="Merge Output 1">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Outputs[Merge Output 1].Columns[Custid]"
-                      codePage="1250"
-                      dataType="str"
-                      length="50"
-                      lineageId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Outputs[Merge Output 1].Columns[Custid]"
-                      name="Custid"
-                      sortKeyPosition="1" />
-                    <outputColumn
-                      refId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Outputs[Merge Output 1].Columns[ Name]"
-                      codePage="1250"
-                      dataType="str"
-                      length="50"
-                      lineageId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Outputs[Merge Output 1].Columns[ Name]"
-                      name=" Name" />
-                    <outputColumn
-                      refId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Outputs[Merge Output 1].Columns[ ShortName]"
-                      codePage="1250"
-                      dataType="str"
-                      length="50"
-                      lineageId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Outputs[Merge Output 1].Columns[ ShortName]"
-                      name=" ShortName" />
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-              </outputs>
-            </component>
-            <component
-              refId="Package\Data Flow Task\Merge S1 + S2"
-              componentClassID="Microsoft.Merge"
-              contactInfo="Merge;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
-              description="Combines rows from multiple sorted data flows into one sorted data flow. Unlike the Merge Join, all rows flow to the output. For example, combine two sorted lists of customers into a single sorted list. If sorting is not important, use the Union All transformation. "
-              name="Merge S1 + S2"
-              version="1">
-              <inputs>
-                <input
-                  refId="Package\Data Flow Task\Merge S1 + S2.Inputs[Merge Input 1]"
-                  name="Merge Input 1">
-                  <inputColumns>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Merge S1 + S2.Inputs[Merge Input 1].Columns[Custid]"
-                      cachedCodepage="1250"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName="Custid"
-                      cachedSortKeyPosition="1"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[Custid]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\Data Flow Task\Merge S1 + S2.Outputs[Merge Output 1].Columns[Custid]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Merge S1 + S2.Inputs[Merge Input 1].Columns[ Name]"
-                      cachedCodepage="1250"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName=" Name"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[ Name]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\Data Flow Task\Merge S1 + S2.Outputs[Merge Output 1].Columns[ Name]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Merge S1 + S2.Inputs[Merge Input 1].Columns[ ShortName]"
-                      cachedCodepage="1250"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName=" ShortName"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[ ShortName]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\Data Flow Task\Merge S1 + S2.Outputs[Merge Output 1].Columns[ ShortName]}</property>
-                      </properties>
-                    </inputColumn>
-                  </inputColumns>
-                  <externalMetadataColumns />
-                </input>
-                <input
-                  refId="Package\Data Flow Task\Merge S1 + S2.Inputs[Merge Input 2]"
-                  name="Merge Input 2">
-                  <inputColumns>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Merge S1 + S2.Inputs[Merge Input 2].Columns[Custid]"
-                      cachedCodepage="1250"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName="Custid"
-                      cachedSortKeyPosition="1"
-                      lineageId="Package\Data Flow Task\Sort 1.Outputs[Sort Output].Columns[Custid]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\Data Flow Task\Merge S1 + S2.Outputs[Merge Output 1].Columns[Custid]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Merge S1 + S2.Inputs[Merge Input 2].Columns[ Name]"
-                      cachedCodepage="1250"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName=" Name"
-                      lineageId="Package\Data Flow Task\Sort 1.Outputs[Sort Output].Columns[ Name]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\Data Flow Task\Merge S1 + S2.Outputs[Merge Output 1].Columns[ Name]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Merge S1 + S2.Inputs[Merge Input 2].Columns[ ShortName]"
-                      cachedCodepage="1250"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName=" ShortName"
-                      lineageId="Package\Data Flow Task\Sort 1.Outputs[Sort Output].Columns[ ShortName]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\Data Flow Task\Merge S1 + S2.Outputs[Merge Output 1].Columns[ ShortName]}</property>
-                      </properties>
-                    </inputColumn>
-                  </inputColumns>
-                  <externalMetadataColumns />
-                </input>
-              </inputs>
-              <outputs>
-                <output
-                  refId="Package\Data Flow Task\Merge S1 + S2.Outputs[Merge Output 1]"
-                  isSorted="true"
-                  name="Merge Output 1">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Merge S1 + S2.Outputs[Merge Output 1].Columns[Custid]"
-                      codePage="1250"
-                      dataType="str"
-                      length="50"
-                      lineageId="Package\Data Flow Task\Merge S1 + S2.Outputs[Merge Output 1].Columns[Custid]"
-                      name="Custid"
-                      sortKeyPosition="1" />
-                    <outputColumn
-                      refId="Package\Data Flow Task\Merge S1 + S2.Outputs[Merge Output 1].Columns[ Name]"
-                      codePage="1250"
-                      dataType="str"
-                      length="50"
-                      lineageId="Package\Data Flow Task\Merge S1 + S2.Outputs[Merge Output 1].Columns[ Name]"
-                      name=" Name" />
-                    <outputColumn
-                      refId="Package\Data Flow Task\Merge S1 + S2.Outputs[Merge Output 1].Columns[ ShortName]"
-                      codePage="1250"
-                      dataType="str"
-                      length="50"
-                      lineageId="Package\Data Flow Task\Merge S1 + S2.Outputs[Merge Output 1].Columns[ ShortName]"
-                      name=" ShortName" />
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-              </outputs>
-            </component>
             <component
               refId="Package\Data Flow Task\OLE DB Destination"
               componentClassID="Microsoft.OLEDBDestination"
@@ -560,9 +264,8 @@
                       cachedDataType="str"
                       cachedLength="50"
                       cachedName="Custid"
-                      cachedSortKeyPosition="1"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Custid]"
-                      lineageId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Outputs[Merge Output 1].Columns[Custid]" />
+                      lineageId="Package\Data Flow Task\Union All.Outputs[Union All Output 1].Columns[Custid]" />
                     <inputColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ Name]"
                       cachedCodepage="1250"
@@ -570,7 +273,7 @@
                       cachedLength="50"
                       cachedName=" Name"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FirstName]"
-                      lineageId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Outputs[Merge Output 1].Columns[ Name]" />
+                      lineageId="Package\Data Flow Task\Union All.Outputs[Union All Output 1].Columns[ Name]" />
                     <inputColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ ShortName]"
                       cachedCodepage="1250"
@@ -578,7 +281,7 @@
                       cachedLength="50"
                       cachedName=" ShortName"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LastName]"
-                      lineageId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Outputs[Merge Output 1].Columns[ ShortName]" />
+                      lineageId="Package\Data Flow Task\Union All.Outputs[Union All Output 1].Columns[ ShortName]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1074,30 +777,19 @@
               </outputs>
             </component>
             <component
-              refId="Package\Data Flow Task\Sort"
-              componentClassID="Microsoft.Sort"
-              contactInfo="Sort;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
-              description="Sorts input data in ascending or descending order when it cannot be sorted at its source. For example, sort sales data by 'customer id' before it is written to a flat file and delivered to another department. Note: We do not recommend this transformation for large data flows."
-              name="Sort"
+              refId="Package\Data Flow Task\Union All"
+              componentClassID="Microsoft.UnionAll"
+              contactInfo="Union All;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Combines rows from multiple data flows without sorting. For example, add rows back to a data flow after correction of errors. If sorting is important, we recommend using the Merge transformation."
+              name="Union All"
               version="1">
-              <properties>
-                <property
-                  dataType="System.Boolean"
-                  description="Indicates whether the Sort transformation removes rows with duplicate sort values."
-                  name="EliminateDuplicates">false</property>
-                <property
-                  dataType="System.Int32"
-                  description="Specifies the maximum number of threads to use for sorting."
-                  expressionType="Notify"
-                  name="MaximumThreads">-1</property>
-              </properties>
               <inputs>
                 <input
-                  refId="Package\Data Flow Task\Sort.Inputs[Sort Input]"
-                  name="Sort Input">
+                  refId="Package\Data Flow Task\Union All.Inputs[Union All Input 1]"
+                  name="Union All Input 1">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[Custid]"
+                      refId="Package\Data Flow Task\Union All.Inputs[Union All Input 1].Columns[Custid]"
                       cachedCodepage="1250"
                       cachedDataType="str"
                       cachedLength="50"
@@ -1105,17 +797,14 @@
                       lineageId="Package\Data Flow Task\S1.Outputs[Flat File Source Output].Columns[Custid]">
                       <properties>
                         <property
+                          containsID="true"
                           dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">1</property>
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Data Flow Task\Union All.Outputs[Union All Output 1].Columns[Custid]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
-                      refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[ Name]"
+                      refId="Package\Data Flow Task\Union All.Inputs[Union All Input 1].Columns[ Name]"
                       cachedCodepage="1250"
                       cachedDataType="str"
                       cachedLength="50"
@@ -1123,17 +812,14 @@
                       lineageId="Package\Data Flow Task\S1.Outputs[Flat File Source Output].Columns[ Name]">
                       <properties>
                         <property
+                          containsID="true"
                           dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Data Flow Task\Union All.Outputs[Union All Output 1].Columns[ Name]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
-                      refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[ ShortName]"
+                      refId="Package\Data Flow Task\Union All.Inputs[Union All Input 1].Columns[ ShortName]"
                       cachedCodepage="1250"
                       cachedDataType="str"
                       cachedLength="50"
@@ -1141,101 +827,22 @@
                       lineageId="Package\Data Flow Task\S1.Outputs[Flat File Source Output].Columns[ ShortName]">
                       <properties>
                         <property
+                          containsID="true"
                           dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Data Flow Task\Union All.Outputs[Union All Output 1].Columns[ ShortName]}</property>
                       </properties>
                     </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
-              </inputs>
-              <outputs>
-                <output
-                  refId="Package\Data Flow Task\Sort.Outputs[Sort Output]"
-                  isSorted="true"
-                  name="Sort Output">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[Custid]"
-                      codePage="1250"
-                      dataType="str"
-                      length="50"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[Custid]"
-                      name="Custid"
-                      sortKeyPosition="1">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\S1.Outputs[Flat File Source Output].Columns[Custid]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[ Name]"
-                      codePage="1250"
-                      dataType="str"
-                      length="50"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[ Name]"
-                      name=" Name">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\S1.Outputs[Flat File Source Output].Columns[ Name]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[ ShortName]"
-                      codePage="1250"
-                      dataType="str"
-                      length="50"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[ ShortName]"
-                      name=" ShortName">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\S1.Outputs[Flat File Source Output].Columns[ ShortName]}</property>
-                      </properties>
-                    </outputColumn>
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-              </outputs>
-            </component>
-            <component
-              refId="Package\Data Flow Task\Sort 1"
-              componentClassID="Microsoft.Sort"
-              contactInfo="Sort;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
-              description="Sorts input data in ascending or descending order when it cannot be sorted at its source. For example, sort sales data by 'customer id' before it is written to a flat file and delivered to another department. Note: We do not recommend this transformation for large data flows."
-              name="Sort 1"
-              version="1">
-              <properties>
-                <property
-                  dataType="System.Boolean"
-                  description="Indicates whether the Sort transformation removes rows with duplicate sort values."
-                  name="EliminateDuplicates">false</property>
-                <property
-                  dataType="System.Int32"
-                  description="Specifies the maximum number of threads to use for sorting."
-                  expressionType="Notify"
-                  name="MaximumThreads">-1</property>
-              </properties>
-              <inputs>
                 <input
-                  refId="Package\Data Flow Task\Sort 1.Inputs[Sort Input]"
-                  name="Sort Input">
+                  refId="Package\Data Flow Task\Union All.Inputs[Union All Input 2]"
+                  hasSideEffects="true"
+                  name="Union All Input 2">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\Data Flow Task\Sort 1.Inputs[Sort Input].Columns[Custid]"
+                      refId="Package\Data Flow Task\Union All.Inputs[Union All Input 2].Columns[Custid]"
                       cachedCodepage="1250"
                       cachedDataType="str"
                       cachedLength="50"
@@ -1243,17 +850,14 @@
                       lineageId="Package\Data Flow Task\S2.Outputs[Flat File Source Output].Columns[Custid]">
                       <properties>
                         <property
+                          containsID="true"
                           dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">1</property>
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Data Flow Task\Union All.Outputs[Union All Output 1].Columns[Custid]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
-                      refId="Package\Data Flow Task\Sort 1.Inputs[Sort Input].Columns[ Name]"
+                      refId="Package\Data Flow Task\Union All.Inputs[Union All Input 2].Columns[ Name]"
                       cachedCodepage="1250"
                       cachedDataType="str"
                       cachedLength="50"
@@ -1261,17 +865,14 @@
                       lineageId="Package\Data Flow Task\S2.Outputs[Flat File Source Output].Columns[ Name]">
                       <properties>
                         <property
+                          containsID="true"
                           dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Data Flow Task\Union All.Outputs[Union All Output 1].Columns[ Name]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
-                      refId="Package\Data Flow Task\Sort 1.Inputs[Sort Input].Columns[ ShortName]"
+                      refId="Package\Data Flow Task\Union All.Inputs[Union All Input 2].Columns[ ShortName]"
                       cachedCodepage="1250"
                       cachedDataType="str"
                       cachedLength="50"
@@ -1279,101 +880,22 @@
                       lineageId="Package\Data Flow Task\S2.Outputs[Flat File Source Output].Columns[ ShortName]">
                       <properties>
                         <property
+                          containsID="true"
                           dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Data Flow Task\Union All.Outputs[Union All Output 1].Columns[ ShortName]}</property>
                       </properties>
                     </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
-              </inputs>
-              <outputs>
-                <output
-                  refId="Package\Data Flow Task\Sort 1.Outputs[Sort Output]"
-                  isSorted="true"
-                  name="Sort Output">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort 1.Outputs[Sort Output].Columns[Custid]"
-                      codePage="1250"
-                      dataType="str"
-                      length="50"
-                      lineageId="Package\Data Flow Task\Sort 1.Outputs[Sort Output].Columns[Custid]"
-                      name="Custid"
-                      sortKeyPosition="1">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\S2.Outputs[Flat File Source Output].Columns[Custid]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort 1.Outputs[Sort Output].Columns[ Name]"
-                      codePage="1250"
-                      dataType="str"
-                      length="50"
-                      lineageId="Package\Data Flow Task\Sort 1.Outputs[Sort Output].Columns[ Name]"
-                      name=" Name">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\S2.Outputs[Flat File Source Output].Columns[ Name]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort 1.Outputs[Sort Output].Columns[ ShortName]"
-                      codePage="1250"
-                      dataType="str"
-                      length="50"
-                      lineageId="Package\Data Flow Task\Sort 1.Outputs[Sort Output].Columns[ ShortName]"
-                      name=" ShortName">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\S2.Outputs[Flat File Source Output].Columns[ ShortName]}</property>
-                      </properties>
-                    </outputColumn>
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-              </outputs>
-            </component>
-            <component
-              refId="Package\Data Flow Task\Sort 2"
-              componentClassID="Microsoft.Sort"
-              contactInfo="Sort;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
-              description="Sorts input data in ascending or descending order when it cannot be sorted at its source. For example, sort sales data by 'customer id' before it is written to a flat file and delivered to another department. Note: We do not recommend this transformation for large data flows."
-              name="Sort 2"
-              version="1">
-              <properties>
-                <property
-                  dataType="System.Boolean"
-                  description="Indicates whether the Sort transformation removes rows with duplicate sort values."
-                  name="EliminateDuplicates">false</property>
-                <property
-                  dataType="System.Int32"
-                  description="Specifies the maximum number of threads to use for sorting."
-                  expressionType="Notify"
-                  name="MaximumThreads">-1</property>
-              </properties>
-              <inputs>
                 <input
-                  refId="Package\Data Flow Task\Sort 2.Inputs[Sort Input]"
-                  name="Sort Input">
+                  refId="Package\Data Flow Task\Union All.Inputs[Union All Input 3]"
+                  hasSideEffects="true"
+                  name="Union All Input 3">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\Data Flow Task\Sort 2.Inputs[Sort Input].Columns[Custid]"
+                      refId="Package\Data Flow Task\Union All.Inputs[Union All Input 3].Columns[Custid]"
                       cachedCodepage="1250"
                       cachedDataType="str"
                       cachedLength="50"
@@ -1381,17 +903,14 @@
                       lineageId="Package\Data Flow Task\S3.Outputs[Flat File Source Output].Columns[Custid]">
                       <properties>
                         <property
+                          containsID="true"
                           dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">1</property>
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Data Flow Task\Union All.Outputs[Union All Output 1].Columns[Custid]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
-                      refId="Package\Data Flow Task\Sort 2.Inputs[Sort Input].Columns[ Name]"
+                      refId="Package\Data Flow Task\Union All.Inputs[Union All Input 3].Columns[ Name]"
                       cachedCodepage="1250"
                       cachedDataType="str"
                       cachedLength="50"
@@ -1399,17 +918,14 @@
                       lineageId="Package\Data Flow Task\S3.Outputs[Flat File Source Output].Columns[ Name]">
                       <properties>
                         <property
+                          containsID="true"
                           dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Data Flow Task\Union All.Outputs[Union All Output 1].Columns[ Name]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
-                      refId="Package\Data Flow Task\Sort 2.Inputs[Sort Input].Columns[ ShortName]"
+                      refId="Package\Data Flow Task\Union All.Inputs[Union All Input 3].Columns[ ShortName]"
                       cachedCodepage="1250"
                       cachedDataType="str"
                       cachedLength="50"
@@ -1417,71 +933,49 @@
                       lineageId="Package\Data Flow Task\S3.Outputs[Flat File Source Output].Columns[ ShortName]">
                       <properties>
                         <property
+                          containsID="true"
                           dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Data Flow Task\Union All.Outputs[Union All Output 1].Columns[ ShortName]}</property>
                       </properties>
                     </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
+                <input
+                  refId="Package\Data Flow Task\Union All.Inputs[Union All Input 4]"
+                  dangling="true"
+                  hasSideEffects="true"
+                  name="Union All Input 4">
+                  <externalMetadataColumns />
+                </input>
               </inputs>
               <outputs>
                 <output
-                  refId="Package\Data Flow Task\Sort 2.Outputs[Sort Output]"
-                  isSorted="true"
-                  name="Sort Output">
+                  refId="Package\Data Flow Task\Union All.Outputs[Union All Output 1]"
+                  name="Union All Output 1">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\Data Flow Task\Sort 2.Outputs[Sort Output].Columns[Custid]"
+                      refId="Package\Data Flow Task\Union All.Outputs[Union All Output 1].Columns[Custid]"
                       codePage="1250"
                       dataType="str"
                       length="50"
-                      lineageId="Package\Data Flow Task\Sort 2.Outputs[Sort Output].Columns[Custid]"
-                      name="Custid"
-                      sortKeyPosition="1">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\S3.Outputs[Flat File Source Output].Columns[Custid]}</property>
-                      </properties>
-                    </outputColumn>
+                      lineageId="Package\Data Flow Task\Union All.Outputs[Union All Output 1].Columns[Custid]"
+                      name="Custid" />
                     <outputColumn
-                      refId="Package\Data Flow Task\Sort 2.Outputs[Sort Output].Columns[ Name]"
+                      refId="Package\Data Flow Task\Union All.Outputs[Union All Output 1].Columns[ Name]"
                       codePage="1250"
                       dataType="str"
                       length="50"
-                      lineageId="Package\Data Flow Task\Sort 2.Outputs[Sort Output].Columns[ Name]"
-                      name=" Name">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\S3.Outputs[Flat File Source Output].Columns[ Name]}</property>
-                      </properties>
-                    </outputColumn>
+                      lineageId="Package\Data Flow Task\Union All.Outputs[Union All Output 1].Columns[ Name]"
+                      name=" Name" />
                     <outputColumn
-                      refId="Package\Data Flow Task\Sort 2.Outputs[Sort Output].Columns[ ShortName]"
+                      refId="Package\Data Flow Task\Union All.Outputs[Union All Output 1].Columns[ ShortName]"
                       codePage="1250"
                       dataType="str"
                       length="50"
-                      lineageId="Package\Data Flow Task\Sort 2.Outputs[Sort Output].Columns[ ShortName]"
-                      name=" ShortName">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\S3.Outputs[Flat File Source Output].Columns[ ShortName]}</property>
-                      </properties>
-                    </outputColumn>
+                      lineageId="Package\Data Flow Task\Union All.Outputs[Union All Output 1].Columns[ ShortName]"
+                      name=" ShortName" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -1491,44 +985,24 @@
           <paths>
             <path
               refId="Package\Data Flow Task.Paths[Flat File Source Output]"
-              endId="Package\Data Flow Task\Sort.Inputs[Sort Input]"
+              endId="Package\Data Flow Task\Union All.Inputs[Union All Input 1]"
               name="Flat File Source Output"
               startId="Package\Data Flow Task\S1.Outputs[Flat File Source Output]" />
             <path
               refId="Package\Data Flow Task.Paths[Flat File Source Output1]"
-              endId="Package\Data Flow Task\Sort 1.Inputs[Sort Input]"
+              endId="Package\Data Flow Task\Union All.Inputs[Union All Input 2]"
               name="Flat File Source Output"
               startId="Package\Data Flow Task\S2.Outputs[Flat File Source Output]" />
             <path
               refId="Package\Data Flow Task.Paths[Flat File Source Output2]"
-              endId="Package\Data Flow Task\Sort 2.Inputs[Sort Input]"
+              endId="Package\Data Flow Task\Union All.Inputs[Union All Input 3]"
               name="Flat File Source Output"
               startId="Package\Data Flow Task\S3.Outputs[Flat File Source Output]" />
             <path
-              refId="Package\Data Flow Task.Paths[Merge Output 1]"
-              endId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Inputs[Merge Input 1]"
-              name="Merge Output 1"
-              startId="Package\Data Flow Task\Merge S1 + S2.Outputs[Merge Output 1]" />
-            <path
-              refId="Package\Data Flow Task.Paths[Merge Output 11]"
+              refId="Package\Data Flow Task.Paths[Union All Output 1]"
               endId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]"
-              name="Merge Output 1"
-              startId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Outputs[Merge Output 1]" />
-            <path
-              refId="Package\Data Flow Task.Paths[Sort Output]"
-              endId="Package\Data Flow Task\Merge S1 + S2.Inputs[Merge Input 1]"
-              name="Sort Output"
-              startId="Package\Data Flow Task\Sort.Outputs[Sort Output]" />
-            <path
-              refId="Package\Data Flow Task.Paths[Sort Output1]"
-              endId="Package\Data Flow Task\Merge S1 + S2.Inputs[Merge Input 2]"
-              name="Sort Output"
-              startId="Package\Data Flow Task\Sort 1.Outputs[Sort Output]" />
-            <path
-              refId="Package\Data Flow Task.Paths[Sort Output2]"
-              endId="Package\Data Flow Task\Merge Merge (S1,S2) + S3.Inputs[Merge Input 2]"
-              name="Sort Output"
-              startId="Package\Data Flow Task\Sort 2.Outputs[Sort Output]" />
+              name="Union All Output 1"
+              startId="Package\Data Flow Task\Union All.Outputs[Union All Output 1]" />
           </paths>
         </pipeline>
       </DTS:ObjectData>
@@ -1537,7 +1011,7 @@
       DTS:refId="Package\Execute SQL Task"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
-      DTS:DTSID="{5C44362F-2991-4B8A-AD9B-510BEFA99C14}"
+      DTS:DTSID="{366C0403-BAA9-475E-9083-E6E6B659D6EF}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="Execute SQL Task"
@@ -1546,7 +1020,7 @@
       <DTS:Variables />
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
-          SQLTask:Connection="{833B3AB2-1A28-4655-A191-BD89ACD87BF7}"
+          SQLTask:Connection="{C2C79930-0CAB-43A7-B037-1956AFC3C3C7}"
           SQLTask:SqlStatementSource="delete SSISCust" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
@@ -1555,7 +1029,7 @@
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint]"
       DTS:CreationName=""
-      DTS:DTSID="{A9CE0E67-6F18-4A66-8743-2B14A4C36017}"
+      DTS:DTSID="{1E565F1C-8EE1-4828-B912-BECCF411C646}"
       DTS:From="Package\Execute SQL Task"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint"
@@ -1576,37 +1050,37 @@
         <NodeLayout
           Size="153.333333333334,42.6666666666667"
           Id="Package\Data Flow Task"
-          TopLeft="238.749996442348,200.473687983946" />
+          TopLeft="245.624996339902,188.842108817642" />
         <NodeLayout
           Size="168,42.6666666666667"
           Id="Package\Execute SQL Task"
-          TopLeft="194.374997103587,54.7368431355484" />
+          TopLeft="126.249998118728,72.5263171546017" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="278.374997103587,97.4035098022151">
+          TopLeft="210.249998118728,115.192983821268">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="37.0416660054277,103.070178181731"
+              EndConnector="112.041664887841,73.6491249963735"
               Start="0,0"
-              End="37.0416660054277,95.570178181731">
+              End="112.041664887841,66.1491249963735">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,47.5350890908655" />
+                    End="0,32.8245624981868" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,47.5350890908655"
-                    Point2="0,51.5350890908655"
-                    Point3="4,51.5350890908655" />
+                    Point1="0,32.8245624981868"
+                    Point2="0,36.8245624981868"
+                    Point3="4,36.8245624981868" />
                   <mssgle:LineSegment
-                    End="33.0416660054277,51.5350890908655" />
+                    End="108.041664887841,36.8245624981868" />
                   <mssgle:CubicBezierSegment
-                    Point1="33.0416660054277,51.5350890908655"
-                    Point2="37.0416660054277,51.5350890908655"
-                    Point3="37.0416660054277,55.5350890908655" />
+                    Point1="108.041664887841,36.8245624981868"
+                    Point2="112.041664887841,36.8245624981868"
+                    Point3="112.041664887841,40.8245624981868" />
                   <mssgle:LineSegment
-                    End="37.0416660054277,95.570178181731" />
+                    End="112.041664887841,66.1491249963735" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -1622,41 +1096,53 @@
     design-time-name="Package\Data Flow Task">
     <LayoutInfo>
       <GraphLayout
-        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
-        <NodeLayout
-          Size="93.3333333333334,42.6666666666667"
-          Id="Package\Data Flow Task\S1"
-          TopLeft="115.624998277053,47.2105272044105" />
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="93.3333333333334,42.6666666666667"
           Id="Package\Data Flow Task\S2"
-          TopLeft="254.999996200204,46.5263166652162" />
+          TopLeft="258.749996144325,37.6315796556896" />
         <NodeLayout
-          Size="150.666666666667,42.6666666666667"
-          Id="Package\Data Flow Task\Merge S1 + S2"
-          TopLeft="183.124997271225,216.894740924611" />
+          Size="93.3333333333334,42.6666666666667"
+          Id="Package\Data Flow Task\S1"
+          TopLeft="75.6249988730995,39.0000007340783" />
         <NodeLayout
-          Size="98.6666666666667,42.6666666666667"
-          Id="Package\Data Flow Task\Sort"
-          TopLeft="113.749998304993,122.631580879153" />
+          Size="174.666666666667,42.6666666666667"
+          Id="Package\Data Flow Task\OLE DB Destination"
+          TopLeft="216.874996768311,233.61403823009" />
         <NodeLayout
-          Size="108,42.6666666666667"
-          Id="Package\Data Flow Task\Sort 1"
-          TopLeft="260.624996116385,120.57894926157" />
+          Size="93.3333333333334,42.6666666666667"
+          Id="Package\Data Flow Task\S3"
+          TopLeft="465.624993061647,33.1754384805842" />
+        <NodeLayout
+          Size="122.666666666667,42.6666666666667"
+          Id="Package\Data Flow Task\Union All"
+          TopLeft="238.749996442348,134.789476221288" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Flat File Source Output]"
-          TopLeft="162.687498291023,89.8771938710772">
+          TopLeft="122.291665539766,81.6666674007449">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,32.7543870080761"
+              EndConnector="177.791664235915,53.1228088205432"
               Start="0,0"
-              End="0,25.2543870080761">
+              End="177.791664235915,45.6228088205432">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,25.2543870080761" />
+                    End="0,22.5614044102716" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,22.5614044102716"
+                    Point2="0,26.5614044102716"
+                    Point3="4,26.5614044102716" />
+                  <mssgle:LineSegment
+                    End="173.791664235915,26.5614044102716" />
+                  <mssgle:CubicBezierSegment
+                    Point1="173.791664235915,26.5614044102716"
+                    Point2="177.791664235915,26.5614044102716"
+                    Point3="177.791664235915,30.5614044102716" />
+                  <mssgle:LineSegment
+                    End="177.791664235915,45.6228088205432" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -1667,30 +1153,30 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Flat File Source Output1]"
-          TopLeft="301.666662866871,89.1929833318829">
+          TopLeft="305.416662810991,80.2982463223562">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="12.9583332495143,31.3859659296874"
+              EndConnector="13.7777780758008,54.4912298989319"
               Start="0,0"
-              End="12.9583332495143,23.8859659296874">
+              End="13.7777780758008,46.9912298989319">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,11.6929829648437" />
+                    End="0,28.2737756482944" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,11.6929829648437"
-                    Point2="0,15.6929829648437"
-                    Point3="4,15.6929829648437" />
+                    Point1="0,28.2737756482944"
+                    Point2="0,32.2737756482944"
+                    Point3="4,32.2737756482944" />
                   <mssgle:LineSegment
-                    End="8.95833324951428,15.6929829648437" />
+                    End="9.77777807580082,32.2737756482944" />
                   <mssgle:CubicBezierSegment
-                    Point1="8.95833324951428,15.6929829648437"
-                    Point2="12.9583332495143,15.6929829648437"
-                    Point3="12.9583332495143,19.6929829648437" />
+                    Point1="9.77777807580082,32.2737756482944"
+                    Point2="13.7777780758008,32.2737756482944"
+                    Point3="13.7777780758008,36.2737756482944" />
                   <mssgle:LineSegment
-                    End="12.9583332495143,23.8859659296874" />
+                    End="13.7777780758008,46.9912298989319" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -1699,138 +1185,32 @@
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Sort Output]"
-          TopLeft="163.083331638326,165.29824754582">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="71.5972211884544,51.5964933787907"
-              Start="0,0"
-              End="71.5972211884544,44.0964933787907">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,26.6325941425745" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,26.6325941425745"
-                    Point2="0,30.6325941425745"
-                    Point3="4,30.6325941425745" />
-                  <mssgle:LineSegment
-                    End="67.5972211884544,30.6325941425745" />
-                  <mssgle:CubicBezierSegment
-                    Point1="67.5972211884544,30.6325941425745"
-                    Point2="71.5972211884544,30.6325941425745"
-                    Point3="71.5972211884544,34.6325941425745" />
-                  <mssgle:LineSegment
-                    End="71.5972211884544,44.0964933787907" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Sort Output1]"
-          TopLeft="314.624996116385,163.245615928237">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-32.3888877340488,53.6491249963738"
-              Start="0,0"
-              End="-32.3888877340488,46.1491249963738">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,27.8512318279697" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,27.8512318279697"
-                    Point2="0,31.8512318279697"
-                    Point3="-4,31.8512318279697" />
-                  <mssgle:LineSegment
-                    End="-28.3888877340488,31.8512318279697" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-28.3888877340488,31.8512318279697"
-                    Point2="-32.3888877340488,31.8512318279697"
-                    Point3="-32.3888877340488,35.8512318279697" />
-                  <mssgle:LineSegment
-                    End="-32.3888877340488,46.1491249963738" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="93.3333333333334,42.6666666666667"
-          Id="Package\Data Flow Task\S3"
-          TopLeft="446.874993341044,55.7543862739979" />
-        <NodeLayout
-          Size="108,42.6666666666667"
-          Id="Package\Data Flow Task\Sort 2"
-          TopLeft="440.624993434176,130.333335046183" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Flat File Source Output2]"
-          TopLeft="494.083326720943,98.4210529406645">
+          TopLeft="512.291659728314,75.8421051472508">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,31.9122821055181"
+              EndConnector="-183.541663285966,58.9473710740373"
               Start="0,0"
-              End="0,24.4122821055181">
+              End="-183.541663285966,51.4473710740373">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,24.4122821055181" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="174.666666666667,42.6666666666667"
-          Id="Package\Data Flow Task\OLE DB Destination"
-          TopLeft="158.124997643754,399.280708077762" />
-        <NodeLayout
-          Size="206.666666666667,42.6666666666667"
-          Id="Package\Data Flow Task\Merge Merge (S1,S2) + S3"
-          TopLeft="411.874993862585,271.052634798589" />
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Merge Output 1]"
-          TopLeft="333.791663937892,238.228074257944">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="78.0833299246928,54.1578938739781"
-              Start="0,0"
-              End="70.5833299246928,54.1578938739781">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="35.0416649623464,0" />
+                    End="0,34.4621144596555" />
                   <mssgle:CubicBezierSegment
-                    Point1="35.0416649623464,0"
-                    Point2="39.0416649623464,0"
-                    Point3="39.0416649623464,4" />
+                    Point1="0,34.4621144596555"
+                    Point2="0,38.4621144596555"
+                    Point3="-4,38.4621144596555" />
                   <mssgle:LineSegment
-                    End="39.0416649623464,50.1578938739781" />
+                    End="-179.541663285966,38.4621144596555" />
                   <mssgle:CubicBezierSegment
-                    Point1="39.0416649623464,50.1578938739781"
-                    Point2="39.0416649623464,54.1578938739781"
-                    Point3="43.0416649623464,54.1578938739781" />
+                    Point1="-179.541663285966,38.4621144596555"
+                    Point2="-183.541663285966,38.4621144596555"
+                    Point3="-183.541663285966,42.4621144596555" />
                   <mssgle:LineSegment
-                    End="70.5833299246928,54.1578938739781" />
+                    End="-183.541663285966,51.4473710740373" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -1840,71 +1220,27 @@
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Sort Output2]"
-          TopLeft="494.624993434176,173.000001712849">
+          Id="Package\Data Flow Task.Paths[Union All Output 1]"
+          TopLeft="302.145829938663,177.456142887955">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="20.583333761742,98.0526330857396"
+              EndConnector="0,56.1578953421348"
               Start="0,0"
-              End="20.583333761742,90.5526330857396">
+              End="0,48.6578953421348">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,45.0263165428698" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,45.0263165428698"
-                    Point2="0,49.0263165428698"
-                    Point3="4,49.0263165428698" />
-                  <mssgle:LineSegment
-                    End="16.583333761742,49.0263165428698" />
-                  <mssgle:CubicBezierSegment
-                    Point1="16.583333761742,49.0263165428698"
-                    Point2="20.583333761742,49.0263165428698"
-                    Point3="20.583333761742,53.0263165428698" />
-                  <mssgle:LineSegment
-                    End="20.583333761742,90.5526330857396" />
+                    End="0,48.6578953421348" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Merge Output 11]"
-          TopLeft="515.208327195918,313.719301465256">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-269.749996218831,85.5614066125062"
-              Start="0,0"
-              End="-269.749996218831,78.0614066125062">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,38.7807033062531" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,38.7807033062531"
-                    Point2="0,42.7807033062531"
-                    Point3="-4,42.7807033062531" />
-                  <mssgle:LineSegment
-                    End="-265.749996218831,42.7807033062531" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-265.749996218831,42.7807033062531"
-                    Point2="-269.749996218831,42.7807033062531"
-                    Point3="-269.749996218831,46.7807033062531" />
-                  <mssgle:LineSegment
-                    End="-269.749996218831,78.0614066125062" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="-8,16.3289476710674,16,16"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
