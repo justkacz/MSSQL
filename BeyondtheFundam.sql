@@ -282,7 +282,7 @@ ROWTERMINATOR = '\n'
 
 --INDENTITY & SEQUENCE - allows to automatically generate keys:
 --identity (start value, step)
--- identity column might quered not ony by the columns name but also using $identity:
+-- identity column might be quered not only by the columns name but also using $identity:
 
 select $identity from bulktest;
 
@@ -501,12 +501,12 @@ when not matched then
 
 select * from CustomersMerge
 
--- MODIFYING DATA THROUGHT TABLE EXPRESSIONS:
+-- MODIFYING DATA THROUGH TABLE EXPRESSIONS:
 -- not only SELECT but also another DML statements (INSERT, UPDATE, DELETE, and MERGE) are allowed against table expressions
 -- RESTRICTIONS:
--- * If the query defining the table expression joins tables, in the same modification statement only one of the sides of the join
+-- * If query defining the table expression joins tables, in the same modification statement only one of the sides of the join
 --   allowed to affect
--- * column that is a result of calculation cannot be updated, 
+-- * column that is a result of the calculation cannot be updated, 
 -- * INSERT statements must specify values for any columns in the underlying table that do not have implicit values. A column can get a value implicitly if it allows NULL marks, has a default
 -- value, has an identity property, or is typed as ROWVERSION.
 
@@ -818,7 +818,7 @@ set ocountry=ccountry, ocity=ccity, oregion=cregion;
 
 -- ***************************************************************************TRANSACTIONS AND CONCURRENCY:
 -- TRANSACTION is a unit of work that might include multiple activities that query and modify data and that can also change data definition.
---BEGIN TRAN (or TRANSACTION) -> COMMIT TRAN or COLLBACK TRAN (or TRANSACTION) - if transaction should not be commited
+--BEGIN TRAN (or TRANSACTION) -> COMMIT TRAN or ROLLBACK TRAN (or TRANSACTION) - if transaction should not be commited
 
 -- IMPLICIT_TRANSACTIONS - by default OFF, changing to ON allows to start transaction without BEGIN TRAN keywords, but the transaction's end must be marked with commit or rollback
 
