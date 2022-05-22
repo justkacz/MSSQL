@@ -66,7 +66,7 @@ as
  select ename from x
 
 --**************************************************PIVOT:
---standard way with CASE - counting the number of employees in each dept - inline view: 
+-- 69% standard way with CASE - counting the number of employees in each dept - inline view: 
 select 
 	max(case when deptno=10 then no else 0 end) as d_10,
 	max(case when deptno=20 then no else 0 end) as d_20,
@@ -75,7 +75,7 @@ from
 	(select deptno, count(*) no
 	from emp
 	group by deptno) x
--- or:
+-- 15% or:
 select 
 	sum(case deptno when 10 then 1 else 0 end) as dept_10,
 	sum(case deptno when 20 then 1 else 0 end) as dept_20,
@@ -83,7 +83,7 @@ select
 	sum(case deptno when 40 then 1 else 0 end) as dept_40
 from emp
 
--- using PIVOT:
+-- 15% using PIVOT:
 select [10] dept_10,
 		[20] dept_20,
 		[30] dept_30
@@ -124,12 +124,18 @@ unpivot (cnt for dname in (ACCOUNTING,SALES,RESEARCH,OPERATIONS)) u_p
 -- searching for mixed alphanumeric strings, query that returns rows where numeric and alphabetical characters exist:
 select * from v8 --rows third and fourth should be returned
 
+--50% 
 select strings
 from (
 	select strings,
 	cast(TRANSLATE(strings, 'abcdefghijklmnopqrstuvwxyz1234567890', (REPLICATE('#', 26) + REPLICATE('*', 10))) as varchar(max)) t
 	from v8) x
 where t like '%#%' and t like '%*%'
+
+-- 50% or:
+select * from v8
+where strings like '%[a-z]%[0-9]%' or strings like '%[0-9]%[a-z]%'
+
 
 -- Pivoting rank result set 1st column 3 the highest salaries, 2nd column next 3 salaries, 3rd column all the rest: :
 --1) query that adds rank column:

@@ -245,7 +245,7 @@ where coalesce(comm, 0) < @ward
 
 
 --**************************************************************************INSERTING, UPDATING, AND DELETING
--- inserting efault values (PostgreSQL and SQL Server):
+-- inserting default values (PostgreSQL and SQL Server):
 create table animal (id int, species varchar (20) default 'cat')
 insert into animal values(1, 'dog'),
 						(2, default)

@@ -25,13 +25,14 @@ from (select ename,
 where r % 2 =1
 
 --query that returns the name and department information for all employees in departments 10 and 20 along with department information for departments 30 and 40 (but no employee information):
+-- 39%
 select e.ename, d.deptno, d.dname, d.loc
 from dept d
 	left join emp e
 		on e.deptno=d.deptno and (e.deptno =10 or e.deptno = 20)   -- emp table is filtered and to the whole dept table are joined only records from 10 or 20 department
 order by d.deptno
 
---or:
+-- 39% or:
 select e.ename, d.deptno, d.dname, d.loc
 from dept d							-- to the whole dept tablt with all departments is attached emp table only with deptno 10 or 20
 	left join
@@ -41,15 +42,28 @@ from dept d							-- to the whole dept tablt with all departments is attached em
 		) e on ( e.deptno = d.deptno )
 order by 2
 
+-- 22% or with union all => THE MOST OPTIMIZED:
+select e.ename, e.deptno, d.dname, d.loc
+from emp e
+	left join dept d
+	on e.DEPTNO=d.DEPTNO
+where e.DEPTNO in (10,20)
+union all
+select null, deptno, dname, loc
+from dept 
+where DEPTNO in (30,40)
+
+
+
 -- selecting the top n records:
---using window function rank/dense_rank() -> counts the same sal value for multiple emp as a one record:
+--50% using window function rank/dense_rank() -> counts the same sal value for multiple emp as a one record:
 select ename, sal, r
 from (select ename, sal,
 	RANK() over(order by sal) as r
 	from emp) x
 where r<=10
 
--- or with top ties: the same result as using rank(), more records returned when using dense_rank()
+-- 50% or with top ties: the same result as using rank(), more records returned when using dense_rank()
 select top 10 with ties ename, sal
 from emp
 order by sal
@@ -112,18 +126,18 @@ select sal,
 	dense_rank() over (order by sal)
 from emp
 
---selecting distinct values in the column:
+-- 50% selecting distinct values in the column:
 select distinct job
 from emp
 
--- or by using window function:
+-- 50%  or by using window function:
 select job, r
 from (select job, ROW_NUMBER() over(PARTITION by job order by sal) as r
 	from emp
 ) x
 where r=1
 
--- query that returns the employee's details and the salary of the last employee hired, in each department:
+-- 50% query that returns the employee's details and the salary of the last employee hired, in each department:
 
 select deptno, ename, sal, hiredate,
 	max(lead) over(partition by deptno) as last_salary
@@ -135,7 +149,7 @@ from (select deptno, ename, sal, hiredate,
 	) x
 	) y
 
--- or with using CASE:
+-- 50% or with using CASE:
 select deptno, ename, sal, hiredate,
 	MAX(last) over(partition by deptno) as last_sal
 from (select deptno, ename, sal, hiredate,
