@@ -105,5 +105,129 @@ select * from dbo.DmlActionLog2
 -- The actual insert, delete, or update operation does not occur at all
 -- the most popular use case - to override an insert, update, or delete operation on a view
 
+create table EmployeeTest  
+(  
+ID int primary key,  
+Name varchar(20),  
+Salary float,  
+Department varchar(20)  
+)
 
+create table Logs
+(
+Activity varchar(100),  
+Activity_date datetime 
+)
+
+-- when new row is inserted into EmployeeTest, the Logs table 
+create trigger afterInsert 
+on EmployeeTest
+after insert
+as
+insert into Logs values('new row has been inserted', GETDATE())
+
+insert into EmployeeTest values(1, 'xxx', 1000, 'it')
+
+-- new row has been inserted into both tables
+select * from EmployeeTest
+select * from Logs
+
+alter trigger dbo.afterInsert
+on EmployeeTest
+instead of insert
+as
+insert into Logs values('new row has been inserted', GETDATE())
+
+insert into EmployeeTest values(2, 'yyy', 1000, 'hr')
+
+-- new row has been inserted only into Logs table - EmployeeTest with no change
+select * from EmployeeTest
+select * from Logs
+
+-- triger insted of might be forced to insert rows also into the table on which it's activated:
+alter trigger dbo.afterInsert
+on EmployeeTest
+instead of insert
+as
+Insert into Employeetest select * from inserted
+insert into Logs values('new row has been inserted', GETDATE())
+
+insert into EmployeeTest values(3, 'zzz', 1000, 'accounting')
+
+-- CTE and WINDOW FUNCTIONS:
+-- CTE operators -> UNION ALL, UNION, INTERSECT, EXCEPT
+-- using multiple anchor queries with multiple recurrence queries the last anchor query must be joined with the first recurrsive query using UNION ALL;
+-- all recurrence queries must be joined using UNION ALL 
+
+select top 5 * from [Production].[BillOfMaterials]
+
+declare @compid int = 774;
+
+with billom (BillOfMaterialsID,ProductAssemblyID,ComponentID, Level)
+as 
+(
+	select bom.BillOfMaterialsID, bom.ProductAssemblyID, bom.ComponentID, 0 as Level
+	from [Production].[BillOfMaterials] bom
+	where bom.ComponentID=@compid
+
+	union all
+	select b.BillOfMaterialsID, b.ProductAssemblyID, b.ComponentID, Level +1
+	from billom bcte
+		join [Production].[BillOfMaterials] b
+		on bcte.ComponentID=b.ProductAssemblyID   -- componentid = productassemblyid of products from lower level
+	where b.EndDate is null
+)
+
+select b.ProductAssemblyID, p.ProductNumber, p.Name, p.Color, b.Level
+from billom b
+join [Production].[Product] p
+on p.ProductID=b.ComponentID
+order by b.level
+
+-- WINDOW FUNCTIONS:
+-- query that returns the most popular lastname
+select 
+	ROW_NUMBER() over(partition by lastName order by LastName, FirstName, middlename)as r,
+	LastName, FirstName, MiddleName
+from Person.Person
+order by lastname
+
+select * 
+from (
+	select MAX(r) over() pop_name, *
+	from (select 
+			ROW_NUMBER() over(partition by lastName order by LastName, FirstName, middlename)as r,
+			LastName, FirstName, MiddleName
+			from Person.Person
+		) x
+	) y
+where r=pop_name
+order by lastname 
+
+select  MAX(num), lastname, FirstName, MiddleName
+from (
+		select count(*) over(partition by Lastname) as num, 
+			LastName, FirstName, MiddleName
+		from Person.Person) x
+group by lastname, FirstName, MiddleName
+
+select LastName, firstname
+from (
+		select LastName, FirstName, MiddleName, num, MAX(num) over() as max_name  --, lastname, FirstName, MiddleName
+		from (
+				select count(*) over(partition by Lastname) as num, 
+					LastName, FirstName, MiddleName
+				from Person.Person) as x
+				) y
+where num = max_name
+
+
+--dealing with NULL as a part of concatenated string:
+--returns additional comma when middlename is null:
+select FirstName+ ', '+isnull(MiddleName, ', ') + ', '+LastName
+from Person.Person
+
+--solution - adding comma to the first argument of isnull function:
+select FirstName+ ', '+isnull(MiddleName+ ', ', '') +LastName
+from Person.Person
 
