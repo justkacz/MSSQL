@@ -11,7 +11,7 @@ where OrderID % 10=6 --% 100 will result with 06
 -- query that returns tables where columns like Orderid and customerid exist
 select TABLE_SCHEMA, TABLE_NAME, count(distinct column_name)
 from INFORMATION_SCHEMA.COLUMNS
-where COLUMN_NAME = 'OrderID' or COLUMN_NAME ='CustomerID'
+where COLUMN_NAME = 'OrderID' or COLUMN_NAME ='CustomerID'  -- AND would result with empty table, having eq 2 or higher than 1 ensures that both conditions are met.
 group by TABLE_SCHEMA, TABLE_NAME
 having count(distinct column_name)>1
 
@@ -76,14 +76,6 @@ from (
 	join [Orders Qry] o
 	on o.OrderID=os.OrderID) x
 group by ntile
-
--- 
-
-select ROW_NUMBER() over(order by orderid) r, * 
-from orders 
-order by ROW_NUMBER() over(order by orderid)
-offset 5 rows 
-fetch next 10 rows only
 
 --the sum of freight for each country depending on year:
 select shipcountry,

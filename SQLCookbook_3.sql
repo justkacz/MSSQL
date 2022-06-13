@@ -63,7 +63,7 @@ from (select ename, sal,
 	from emp) x
 where r<=10
 
--- 50% or with top ties: the same result as using rank(), more records returned when using dense_rank()
+-- 50% or with top ties: the same result as using dense_rank(), more records returned when using dense_rank()
 select top 10 with ties ename, sal
 from emp
 order by sal
@@ -137,7 +137,7 @@ from (select job, ROW_NUMBER() over(PARTITION by job order by sal) as r
 ) x
 where r=1
 
--- 50% query that returns the employee's details and the salary of the last employee hired, in each department:
+-- 33% query that returns the employee's details and the salary of the last employee hired, in each department:
 
 select deptno, ename, sal, hiredate,
 	max(lead) over(partition by deptno) as last_salary
@@ -149,7 +149,7 @@ from (select deptno, ename, sal, hiredate,
 	) x
 	) y
 
--- 50% or with using CASE:
+-- 33% or with using CASE:
 select deptno, ename, sal, hiredate,
 	MAX(last) over(partition by deptno) as last_sal
 from (select deptno, ename, sal, hiredate,
@@ -158,6 +158,17 @@ from (select deptno, ename, sal, hiredate,
 	end as last
 	from emp
 ) x
+
+
+-- 33% or shorter with row number:
+
+select *, LEAD(SAL, cnt-r) over(partition by deptno order by hiredate) as last_sal
+from(
+select deptno, ename, sal, HIREDATE, 
+	ROW_NUMBER() over (PARTITION by deptno order by hiredate) r,
+	COUNT(*) over(PARTITION by deptno) cnt
+from emp) x
+
 
 --*********************************************************REPORTING AND RESHAPING:
 --pivoting into one row:
@@ -286,7 +297,7 @@ select deptno, SUM(sal)  --the highest combined salary is in the dept 20
 from emp
 group by deptno 
 
-
+-- 69%
 select 
 	max(case when deptno=10 then tot-lead end) as diff_10_20,
 	max(case when deptno=20 then tot-lead end) as diff_20_30
@@ -298,7 +309,7 @@ select
 						group by deptno) x		  
 ) y		
 
--- or:
+-- 15% or:
 select d10_sal-d20_sal as d10_20_diff,
 	d20_sal-d30_sal as d20_30_diff
 from(   -- inner query that transposes total sal in each deptno to inline view:
@@ -307,7 +318,7 @@ from(   -- inner query that transposes total sal in each deptno to inline view:
 		sum(case when deptno=30 then sal end) as d30_sal
 	from emp) x
 
--- or with using CTE:
+-- 15% or with using CTE:
 with x (d10_sal, d20_sal, d30_sal)
 as
 (

@@ -55,6 +55,23 @@ from (select ename from emp  where ename='KING') e,
 	(select ROW_NUMBER() over(order by deptno) n from emp) iter
 where iter.n<=len(e.ename)
 
+-- or using CTE:
+with x (ename,s, n)
+as
+(
+	select ename, substring(ename, 1, 1), 1
+	from emp
+	where ENAME='KING'
+	union all
+	select ename, substring(ename, n+1, 1), n+1
+	from x
+	where n<LEN(ename)
+
+)
+
+select s from x
+
+
 -- counting the occurences of a character in a string: 
 declare @x as varchar(100)='10,CLARK,MANAGER'
 -- how many commas occur in x variable;
@@ -175,6 +192,19 @@ select * from v6
 
 select value from string_split((select STRING_AGG(agg_name, ', ') from v6), ',')
 order by value offset 1 row fetch first 1 rows only
+
+-- or stored procedure with variable as row number:
+
+create procedure numrow @n int
+as
+select value
+from string_split(
+(select STRING_AGG(agg_name, ', ') from v6), ',')
+order by value
+offset @n-1 rows
+fetch next 1 rows only
+
+exec numrow 5;
 
 select * from v5
 where mixed like '%[0-9]%'
@@ -574,6 +604,33 @@ left join emp
 group by convert(varchar(7), start_date, 126), convert(varchar(7), emp.hiredate, 126)
 order by 1
 option(maxrecursion 4000)
+
+
+-- and extracting only months and years when the highest number of employees were hired:
+with x (startdate, maxdate)
+as
+(
+	select MIN(hiredate) as startdate, MAX(HIREDATE) as maxdate
+	from emp
+	union all
+	select DATEADD(DAY, 1, startdate), maxdate
+	from x
+	where DATEADD(DAY, 1, startdate)<= maxdate
+)
+select month, emp_hired
+from(
+	select *, DENSE_RANK() over(order by emp_hired desc) r   -- dense rank descending -> first element returns the biggest number 
+	from(
+		select convert(varchar(7), x.startdate, 126) as month, count(empno) as emp_hired
+		from x
+		left join emp e
+			on x.startdate=e.HIREDATE
+		group by convert(varchar(7), x.startdate, 126)
+		)y
+	)z
+where r=1
+option (maxrecursion 32000) 
+
 
 
 -- searching on specific units of time - select the employees who were hired in February, December or Sunday:
